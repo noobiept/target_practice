@@ -3,6 +3,9 @@ var Target = (function () {
         var _this = this;
         var shape = new createjs.Shape();
 
+        shape.x = x;
+        shape.y = y;
+
         var g = shape.graphics;
 
         g.beginFill('red');
@@ -10,7 +13,7 @@ var Target = (function () {
         g.endFill();
 
         shape.on('click', function (event) {
-            _this.clear();
+            Game.removeTarget(_this);
         });
 
         G.STAGE.addChild(shape);

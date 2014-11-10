@@ -2,10 +2,13 @@ class Target
 {
 shape: createjs.Shape;
 
-constructor( x: Number, y: Number )
+constructor( x: number, y: number )
     {
     var _this = this;
     var shape = new createjs.Shape();
+
+    shape.x = x;
+    shape.y = y;
 
     var g = shape.graphics;
 
@@ -13,10 +16,9 @@ constructor( x: Number, y: Number )
     g.drawRect( 0, 0, 10, 10 );
     g.endFill();
 
-
     shape.on( 'click', function( event )
         {
-        _this.clear();
+        Game.removeTarget( _this );
         });
 
 
