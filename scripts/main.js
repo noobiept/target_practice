@@ -4,21 +4,21 @@
 /// <reference path="bullet.ts" />
 /// <reference path="game.ts" />
 /// <reference path="weapon.ts" />
+/// <reference path="game_menu.ts" />
 var G = {
     CANVAS: null,
     STAGE: null,
     PRELOAD: null
 };
-
 window.onload = function () {
     G.CANVAS = document.querySelector('#MainCanvas');
     G.CANVAS.width = 600;
     G.CANVAS.height = 400;
     G.STAGE = new createjs.Stage(G.CANVAS);
     G.STAGE.mouseMoveOutside = true;
-
+    GameMenu.init();
+    Game.init();
     Game.start();
-
     createjs.Ticker.on('tick', function (event) {
         G.STAGE.update();
     });

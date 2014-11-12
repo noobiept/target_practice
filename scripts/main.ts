@@ -4,6 +4,7 @@
 /// <reference path="bullet.ts" />
 /// <reference path="game.ts" />
 /// <reference path="weapon.ts" />
+/// <reference path="game_menu.ts" />
 
 var G = {
     CANVAS: null,
@@ -20,6 +21,8 @@ G.CANVAS.height = 400;
 G.STAGE = new createjs.Stage( G.CANVAS );
 G.STAGE.mouseMoveOutside = true;
 
+GameMenu.init();
+Game.init();
 Game.start();
 
 createjs.Ticker.on( 'tick', function( event )

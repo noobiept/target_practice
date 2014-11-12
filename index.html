@@ -12,11 +12,19 @@
     <script type="text/javascript" src="scripts/bullet.js"></script>
     <script type="text/javascript" src="scripts/target.js"></script>
     <script type="text/javascript" src="scripts/game.js"></script>
+    <script type="text/javascript" src="scripts/game_menu.js"></script>
     <script type="text/javascript" src="scripts/main.js"></script>
+
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
     <canvas id="MainCanvas"></canvas>
 
+    <ul id="GameMenu">
+        <li id="Restart" class="button">Restart</li>
+        <li>Hits: <span id="HitsValue"></span></li>
+        <li>Misses: <span id="MissesValue"></span></li>
+    </ul>
 </body>
 </html>
