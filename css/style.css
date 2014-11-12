@@ -2,3 +2,14 @@
     {
     cursor: pointer;
     }
+
+#MainCanvas
+    {
+    cursor: none;
+    }
+
+#GameMenu
+    {
+    -webkit-user-select: none;
+    user-select: none;
+    }

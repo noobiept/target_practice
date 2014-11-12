@@ -1,9 +1,10 @@
 var CrossHair = (function () {
     function CrossHair() {
+        var radius = 3;
         var shape = new createjs.Shape();
         var g = shape.graphics;
         g.beginFill('black');
-        g.drawCircle(0, 0, 10);
+        g.drawCircle(0, 0, radius);
         g.endFill();
         G.STAGE.addChild(shape);
         this.shape = shape;

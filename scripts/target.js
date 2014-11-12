@@ -1,6 +1,5 @@
 var Target = (function () {
     function Target(x, y) {
-        var _this = this;
         var shape = new createjs.Shape();
         var length = 10;
         shape.x = x;
@@ -10,9 +9,17 @@ var Target = (function () {
         g.drawRect(0, 0, length, length);
         g.endFill();
         G.STAGE.addChild(shape);
+        this.duration_count = 0;
         this.shape = shape;
-        this.length = length;
+        this.side_length = length;
     }
+    Target.prototype.tick = function (event) {
+        this.duration_count += event.delta;
+        if (this.duration_count >= Target.duration) {
+            return true;
+        }
+        return false;
+    };
     Target.prototype.clear = function () {
         G.STAGE.removeChild(this.shape);
     };
@@ -22,5 +29,6 @@ var Target = (function () {
     Target.prototype.getY = function () {
         return this.shape.y;
     };
+    Target.duration = 3000;
     return Target;
 })();

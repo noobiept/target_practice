@@ -4,11 +4,10 @@ shape: createjs.Shape;
 duration_count: number;     // remove the bullet after a certain time/duration has passed
 static duration = 700;    // the duration of the bullets
 
-length: number;     // the width/height (its the same value)
+static side_length = 10;     // the width/height (its the same value)
 
 constructor( x: number, y: number )
     {
-    var length = 10;
     var shape = new createjs.Shape();
 
     shape.x = x;
@@ -17,13 +16,12 @@ constructor( x: number, y: number )
     var g = shape.graphics;
 
     g.beginFill( 'blue' );
-    g.drawRect( 0, 0, length, length );
+    g.drawRect( 0, 0, Bullet.side_length, Bullet.side_length );
     g.endFill();
 
     G.STAGE.addChild( shape );
 
     this.duration_count = 0;
-    this.length = length;
     this.shape = shape;
     }
 

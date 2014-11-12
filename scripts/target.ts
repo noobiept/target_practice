@@ -1,11 +1,12 @@
 class Target
 {
 shape: createjs.Shape;
-length: number;  // the width/height
+side_length: number;             // the width/height
+duration_count: number;     // remove the target after a certain time has passed (and count as a miss)
+static duration = 3000;
 
 constructor( x: number, y: number )
     {
-    var _this = this;
     var shape = new createjs.Shape();
     var length = 10;
 
@@ -20,10 +21,22 @@ constructor( x: number, y: number )
 
     G.STAGE.addChild( shape );
 
+    this.duration_count = 0;
     this.shape = shape;
-    this.length = length;
+    this.side_length = length;
     }
 
+tick( event )
+    {
+    this.duration_count += event.delta;
+
+    if ( this.duration_count >= Target.duration )
+        {
+        return true;
+        }
+
+    return false;
+    }
 
 clear()
     {

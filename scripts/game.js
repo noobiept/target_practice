@@ -72,9 +72,18 @@ var Game;
             BULLETS_FIRED++;
             Game.newBullet();
         }
-        for (var a = BULLETS.length - 1; a >= 0; a--) {
+        // check if there are bullets/targets that timed out (and thus need to be removed)
+        var a;
+        for (a = BULLETS.length - 1; a >= 0; a--) {
             if (BULLETS[a].tick(event)) {
                 Game.removeBullet(BULLETS[a]);
+            }
+        }
+        for (a = TARGETS.length - 1; a >= 0; a--) {
+            if (TARGETS[a].tick(event)) {
+                MISSES_COUNT++;
+                GameMenu.updateMisses(MISSES_COUNT);
+                Game.removeTarget(TARGETS[a]);
             }
         }
     }
@@ -94,8 +103,12 @@ var Game;
         var currentWeapon = Weapon.machineGun; //HERE
         var variance = currentWeapon.variance;
         var recoil = currentWeapon.recoil;
-        var x = Utilities.getRandomInt(MOUSE_X - variance, MOUSE_X + variance);
-        var y = Utilities.getRandomInt(MOUSE_Y - variance, MOUSE_Y + variance);
+        var bulletLength = Bullet.side_length;
+        var halfBulletLength = bulletLength / 2;
+        var centerX = MOUSE_X - halfBulletLength;
+        var centerY = MOUSE_Y - halfBulletLength;
+        var x = Utilities.getRandomInt(centerX - variance, centerX + variance);
+        var y = Utilities.getRandomInt(centerY - variance, centerY + variance);
         // find the recoil info to be used for the current bullet (depends on the number of bullets fired in the current spray)
         var recoilInfo = null;
         var nextInfo = null;
@@ -114,7 +127,6 @@ var Game;
         BULLETS.push(bullet);
         var bulletX = bullet.getX();
         var bulletY = bullet.getY();
-        var bulletLength = bullet.length;
         for (var a = TARGETS.length - 1; a >= 0; a--) {
             var target = TARGETS[a];
             if (Utilities.boxBoxCollision(bulletX, bulletY, bulletLength, bulletLength, target.getX(), target.getY(), target.length, target.length)) {
