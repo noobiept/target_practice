@@ -8,8 +8,10 @@ var Game;
     var NEW_TARGET_COUNT = 0;
 
     var MOUSE_HELD = false;
-    var BULLET_INTERVAL = 300;
+    var BULLET_INTERVAL = 200;
     var BULLET_COUNT = BULLET_INTERVAL;
+
+    var BULLETS_FIRED = 0;
 
     var MOUSE_X = 0;
     var MOUSE_Y = 0;
@@ -29,6 +31,7 @@ var Game;
         });
 
         G.CANVAS.addEventListener('mouseup', function (event) {
+            BULLETS_FIRED = 0;
             BULLET_COUNT = BULLET_INTERVAL;
             MOUSE_HELD = false;
         });
@@ -52,6 +55,7 @@ var Game;
 
         if (MOUSE_HELD && BULLET_COUNT >= BULLET_INTERVAL) {
             BULLET_COUNT = 0;
+            BULLETS_FIRED++;
 
             Game.newBullet();
         }
@@ -81,10 +85,31 @@ var Game;
     Game.removeTarget = removeTarget;
 
     function newBullet() {
-        var range = 30;
+        var currentWeapon = Weapon.machineGun;
+        var variance = currentWeapon.variance;
+        var recoil = currentWeapon.recoil;
 
-        var x = Utilities.getRandomInt(MOUSE_X - range, MOUSE_X + range);
-        var y = Utilities.getRandomInt(MOUSE_Y - range, MOUSE_Y + range);
+        var x = Utilities.getRandomInt(MOUSE_X - variance, MOUSE_X + variance);
+        var y = Utilities.getRandomInt(MOUSE_Y - variance, MOUSE_Y + variance);
+
+        // find the recoil info to be used for the current bullet (depends on the number of bullets fired in the current spray)
+        var recoilInfo = null;
+        var nextInfo = null;
+
+        for (var a = 0; a < recoil.length; a++) {
+            nextInfo = recoil[a];
+
+            if (BULLETS_FIRED < nextInfo.bullet) {
+                break;
+            }
+
+            recoilInfo = nextInfo;
+        }
+
+        if (recoilInfo !== null) {
+            x += recoilInfo.xOffset;
+            y += recoilInfo.yOffset;
+        }
 
         var bullet = new Bullet(x, y);
         BULLETS.push(bullet);

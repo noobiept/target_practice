@@ -3,6 +3,7 @@
 /// <reference path="target.ts" />
 /// <reference path="bullet.ts" />
 /// <reference path="game.ts" />
+/// <reference path="weapon.ts" />
 var G = {
     CANVAS: null,
     STAGE: null,
