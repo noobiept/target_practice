@@ -60,7 +60,7 @@ var Weapon = (function () {
     };
     Weapon.prototype.reload = function () {
         this.is_reloading = true;
-        console.log('Reloading..');
+        Message.show('Reloading..');
     };
     Weapon.prototype.clear = function () {
         var bullets = this.bullets;
@@ -91,10 +91,12 @@ var Weapon = (function () {
         // deal with the reloading of the weapon (if its currently going)
         if (this.is_reloading) {
             this.reload_count += event.delta;
+            // reload finished
             if (this.reload_count >= this.info.reload_duration) {
                 this.reload_count = 0;
                 this.is_reloading = false;
                 this.bullets_in_magazine = this.info.magazine_capacity;
+                Message.hide();
                 GameMenu.updateBulletsLeft(this.bullets_in_magazine);
             }
         }

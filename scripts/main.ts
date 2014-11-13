@@ -5,6 +5,7 @@
 /// <reference path="game.ts" />
 /// <reference path="weapon.ts" />
 /// <reference path="game_menu.ts" />
+/// <reference path="message.ts" />
 
 var G = {
     CANVAS: null,
@@ -28,6 +29,7 @@ GameMenu.init();
 Target.init( G.STAGE );
 Bullet.init( G.STAGE );
 CrossHair.init( G.STAGE );
+Message.init( G.STAGE );
 
 Game.init();
 Game.start();
