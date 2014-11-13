@@ -2,6 +2,15 @@ class CrossHair
 {
 shape: createjs.Shape;
 
+private static _container: createjs.Container;
+
+static init( stage )
+    {
+    CrossHair._container = new createjs.Container();
+
+    stage.addChild( CrossHair._container );
+    }
+
 constructor()
     {
     var radius = 3;
@@ -14,7 +23,7 @@ constructor()
     g.drawCircle( 0, 0, radius );
     g.endFill();
 
-    G.STAGE.addChild( shape );
+    CrossHair._container.addChild( shape );
 
     this.shape = shape;
     }
@@ -27,6 +36,6 @@ moveTo( x, y )
 
 clear()
     {
-    G.STAGE.removeChild( this.shape );
+    CrossHair._container.removeChild( this.shape );
     }
 }

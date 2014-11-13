@@ -3,7 +3,7 @@ var Weapon = (function () {
         this.info = Weapon.info[type];
         this.bullets = [];
         this.reload_count = 0;
-        this.bullet_interval_count = 0;
+        this.bullet_interval_count = this.info.bullet_interval;
         this.is_reloading = false;
         this.bullets_fired = 0;
         this.bullets_in_magazine = this.info.magazine_capacity;
@@ -17,6 +17,7 @@ var Weapon = (function () {
         var variance = weaponInfo.variance;
         var recoil = weaponInfo.recoil;
         var bulletLength = Bullet.side_length;
+        var targetLength = Target.side_length;
         var halfBulletLength = bulletLength / 2;
         var centerX = Game.MOUSE_X - halfBulletLength;
         var centerY = Game.MOUSE_Y - halfBulletLength;
@@ -40,7 +41,7 @@ var Weapon = (function () {
         this.bullets.push(bullet);
         for (var a = Game.TARGETS.length - 1; a >= 0; a--) {
             var target = Game.TARGETS[a];
-            if (Utilities.boxBoxCollision(x, y, bulletLength, bulletLength, target.getX(), target.getY(), target.side_length, target.side_length)) {
+            if (Utilities.boxBoxCollision(x, y, bulletLength, bulletLength, target.getX(), target.getY(), targetLength, targetLength)) {
                 Game.oneMoreHit();
                 Game.removeTarget(target);
                 break;
@@ -70,11 +71,10 @@ var Weapon = (function () {
     };
     Weapon.prototype.stopFiring = function () {
         this.bullets_fired = 0;
-        this.bullet_interval_count = 0;
     };
     Weapon.prototype.tick = function (event) {
+        this.bullet_interval_count += event.delta;
         if (Game.MOUSE_HELD && !this.is_reloading) {
-            this.bullet_interval_count += event.delta;
             if (this.bullet_interval_count >= this.info.bullet_interval) {
                 this.bullet_interval_count = 0;
                 this.bullets_fired++;

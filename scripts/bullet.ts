@@ -6,6 +6,15 @@ static duration = 700;    // the duration of the bullets
 
 static side_length = 10;     // the width/height (its the same value)
 
+private static _container: createjs.Container;
+
+static init( stage )
+    {
+    Bullet._container = new createjs.Container();
+
+    stage.addChild( Bullet._container );
+    }
+
 constructor( x: number, y: number )
     {
     var shape = new createjs.Shape();
@@ -19,7 +28,7 @@ constructor( x: number, y: number )
     g.drawRect( 0, 0, Bullet.side_length, Bullet.side_length );
     g.endFill();
 
-    G.STAGE.addChild( shape );
+    Bullet._container.addChild( shape );
 
     this.duration_count = 0;
     this.shape = shape;
@@ -39,7 +48,7 @@ tick( event )
 
 clear()
     {
-    G.STAGE.removeChild( this.shape );
+    Bullet._container.removeChild( this.shape );
     }
 
 getX()

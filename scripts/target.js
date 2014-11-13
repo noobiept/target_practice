@@ -1,18 +1,21 @@
 var Target = (function () {
     function Target(x, y) {
         var shape = new createjs.Shape();
-        var length = 10;
+        var length = Target.side_length;
         shape.x = x;
         shape.y = y;
         var g = shape.graphics;
         g.beginFill('red');
         g.drawRect(0, 0, length, length);
         g.endFill();
-        G.STAGE.addChild(shape);
+        Target._container.addChild(shape);
         this.duration_count = 0;
         this.shape = shape;
-        this.side_length = length;
     }
+    Target.init = function (stage) {
+        Target._container = new createjs.Container();
+        stage.addChild(Target._container);
+    };
     Target.prototype.tick = function (event) {
         this.duration_count += event.delta;
         if (this.duration_count >= Target.duration) {
@@ -21,7 +24,7 @@ var Target = (function () {
         return false;
     };
     Target.prototype.clear = function () {
-        G.STAGE.removeChild(this.shape);
+        Target._container.removeChild(this.shape);
     };
     Target.prototype.getX = function () {
         return this.shape.x;
@@ -30,5 +33,6 @@ var Target = (function () {
         return this.shape.y;
     };
     Target.duration = 3000;
+    Target.side_length = 10; // the width/height
     return Target;
 })();

@@ -6,15 +6,19 @@ var CrossHair = (function () {
         g.beginFill('black');
         g.drawCircle(0, 0, radius);
         g.endFill();
-        G.STAGE.addChild(shape);
+        CrossHair._container.addChild(shape);
         this.shape = shape;
     }
+    CrossHair.init = function (stage) {
+        CrossHair._container = new createjs.Container();
+        stage.addChild(CrossHair._container);
+    };
     CrossHair.prototype.moveTo = function (x, y) {
         this.shape.x = x;
         this.shape.y = y;
     };
     CrossHair.prototype.clear = function () {
-        G.STAGE.removeChild(this.shape);
+        CrossHair._container.removeChild(this.shape);
     };
     return CrossHair;
 })();

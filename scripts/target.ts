@@ -1,14 +1,24 @@
 class Target
 {
 shape: createjs.Shape;
-side_length: number;             // the width/height
 duration_count: number;     // remove the target after a certain time has passed (and count as a miss)
 static duration = 3000;
+static side_length = 10;    // the width/height
+
+private static _container: createjs.Container;   // all targets will be added to this container
+
+static init( stage )
+    {
+    Target._container = new createjs.Container();
+
+    stage.addChild( Target._container );
+    }
+
 
 constructor( x: number, y: number )
     {
     var shape = new createjs.Shape();
-    var length = 10;
+    var length = Target.side_length;
 
     shape.x = x;
     shape.y = y;
@@ -19,11 +29,10 @@ constructor( x: number, y: number )
     g.drawRect( 0, 0, length, length );
     g.endFill();
 
-    G.STAGE.addChild( shape );
+    Target._container.addChild( shape );
 
     this.duration_count = 0;
     this.shape = shape;
-    this.side_length = length;
     }
 
 tick( event )
@@ -40,7 +49,7 @@ tick( event )
 
 clear()
     {
-    G.STAGE.removeChild( this.shape );
+    Target._container.removeChild( this.shape );
     }
 
 getX()

@@ -7,10 +7,14 @@ var Bullet = (function () {
         g.beginFill('blue');
         g.drawRect(0, 0, Bullet.side_length, Bullet.side_length);
         g.endFill();
-        G.STAGE.addChild(shape);
+        Bullet._container.addChild(shape);
         this.duration_count = 0;
         this.shape = shape;
     }
+    Bullet.init = function (stage) {
+        Bullet._container = new createjs.Container();
+        stage.addChild(Bullet._container);
+    };
     Bullet.prototype.tick = function (event) {
         this.duration_count += event.delta;
         if (this.duration_count >= Bullet.duration) {
@@ -19,7 +23,7 @@ var Bullet = (function () {
         return false;
     };
     Bullet.prototype.clear = function () {
-        G.STAGE.removeChild(this.shape);
+        Bullet._container.removeChild(this.shape);
     };
     Bullet.prototype.getX = function () {
         return this.shape.x;

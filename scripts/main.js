@@ -17,6 +17,11 @@ window.onload = function () {
     G.STAGE = new createjs.Stage(G.CANVAS);
     G.STAGE.mouseMoveOutside = true;
     GameMenu.init();
+    // the order here sets the z-index of the elements
+    // for example, right now the bullets will always be on top of the targets
+    Target.init(G.STAGE);
+    Bullet.init(G.STAGE);
+    CrossHair.init(G.STAGE);
     Game.init();
     Game.start();
     createjs.Ticker.on('tick', function (event) {

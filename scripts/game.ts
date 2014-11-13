@@ -104,8 +104,8 @@ function tick( event )
 
 export function newTarget()
     {
-    var x = Utilities.getRandomInt( 0, G.CANVAS.width );
-    var y = Utilities.getRandomInt( 0, G.CANVAS.height );
+    var x = Utilities.getRandomInt( 0, G.CANVAS.width - Target.side_length );
+    var y = Utilities.getRandomInt( 0, G.CANVAS.height - Target.side_length );
 
     TARGETS.push( new Target( x, y ) );
     }
