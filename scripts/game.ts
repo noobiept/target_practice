@@ -1,27 +1,25 @@
 module Game
 {
 var CROSS_HAIR = null;
-var TARGETS = [];
-var BULLETS = [];
+export var TARGETS = [];    //HERE
 
 var NEW_TARGET_INTERVAL = 1500;
 var NEW_TARGET_COUNT = 0;
 
-var MOUSE_HELD = false;
-var BULLET_INTERVAL = 200;
-var BULLET_COUNT = BULLET_INTERVAL; // so that it fires a bullet from the start
+export var MOUSE_HELD = false;
 
-var BULLETS_FIRED = 0;
-
-var MOUSE_X = 0;
-var MOUSE_Y = 0;
+export var MOUSE_X = 0;
+export var MOUSE_Y = 0;
 
 var HITS_COUNT = 0;
 var MISSES_COUNT = 0;
 
+var CURRENT_WEAPON: Weapon = null;
+
 export function init()
     {
     CROSS_HAIR = new CrossHair();
+    CURRENT_WEAPON = new Weapon( 'machineGun' );
 
     G.STAGE.on( 'stagemousemove', function( event )
         {
@@ -38,8 +36,7 @@ export function init()
 
     document.body.addEventListener( 'mouseup', function( event )
         {
-        BULLETS_FIRED = 0;
-        BULLET_COUNT = BULLET_INTERVAL;
+        CURRENT_WEAPON.stopFiring();
         MOUSE_HELD = false;
         });
 
@@ -64,16 +61,7 @@ export function clear()
 
     TARGETS.length = 0;
 
-    for (a = 0 ; a < BULLETS.length ; a++)
-        {
-        BULLETS[ a ].clear();
-        }
-
-    BULLETS.length = 0;
-
     NEW_TARGET_COUNT = 0;
-    BULLET_COUNT = BULLET_INTERVAL;
-    BULLETS_FIRED = 0;
 
     HITS_COUNT = 0;
     MISSES_COUNT = 0;
@@ -97,34 +85,17 @@ function tick( event )
         Game.newTarget();
         }
 
-        // bullets
-    BULLET_COUNT += event.delta;
+        // weapons
+    CURRENT_WEAPON.tick( event );
 
-    if ( MOUSE_HELD && BULLET_COUNT >= BULLET_INTERVAL )
-        {
-        BULLET_COUNT = 0;
-        BULLETS_FIRED++;
-
-        Game.newBullet();
-        }
-
-        // check if there are bullets/targets that timed out (and thus need to be removed)
+        // check if there are targets that timed out (and thus need to be removed)
     var a;
-
-    for (a = BULLETS.length - 1 ; a >= 0 ; a--)
-        {
-        if ( BULLETS[ a ].tick( event ) )
-            {
-            Game.removeBullet( BULLETS[ a ] );
-            }
-        }
 
     for (a = TARGETS.length - 1 ; a >= 0 ; a--)
         {
         if ( TARGETS[ a ].tick( event ) )
             {
-            MISSES_COUNT++;
-            GameMenu.updateMisses( MISSES_COUNT );
+            Game.oneMoreMiss();
 
             Game.removeTarget( TARGETS[ a ] );
             }
@@ -148,72 +119,19 @@ export function removeTarget( target: Target )
     target.clear();
     }
 
-export function newBullet()
+
+export function oneMoreHit()
     {
-    var currentWeapon = Weapon.machineGun;  //HERE
-    var variance = currentWeapon.variance;
-    var recoil = currentWeapon.recoil;
+    HITS_COUNT++;
 
-    var bulletLength = Bullet.side_length;
-    var halfBulletLength = bulletLength / 2;
-    var centerX = MOUSE_X - halfBulletLength;
-    var centerY = MOUSE_Y - halfBulletLength;
-
-    var x = Utilities.getRandomInt( centerX - variance, centerX + variance );
-    var y = Utilities.getRandomInt( centerY - variance, centerY + variance );
-
-        // find the recoil info to be used for the current bullet (depends on the number of bullets fired in the current spray)
-    var recoilInfo = null;
-    var nextInfo = null;
-
-    for (var a = 0 ; a < recoil.length ; a++)
-        {
-        nextInfo = recoil[ a ];
-
-        if ( BULLETS_FIRED < nextInfo.bullet )
-            {
-            break;
-            }
-
-        recoilInfo = nextInfo;
-        }
-
-    if ( recoilInfo !== null )
-        {
-        x += recoilInfo.xOffset;
-        y += recoilInfo.yOffset;
-        }
-
-
-    var bullet = new Bullet( x, y );
-    BULLETS.push( bullet );
-
-    var bulletX = bullet.getX();
-    var bulletY = bullet.getY();
-
-        // check if we hit any target
-    for (var a = TARGETS.length - 1 ; a >= 0 ; a--)
-        {
-        var target = TARGETS[ a ];
-
-        if ( Utilities.boxBoxCollision( bulletX, bulletY, bulletLength, bulletLength, target.getX(), target.getY(), target.length, target.length ) )
-            {
-            HITS_COUNT++;
-            GameMenu.updateHits( HITS_COUNT );
-
-            Game.removeTarget( target );
-            break;
-            }
-        }
+    GameMenu.updateHits( HITS_COUNT );
     }
 
-export function removeBullet( bullet )
+export function oneMoreMiss()
     {
-    var position = BULLETS.indexOf( bullet );
+    MISSES_COUNT++;
 
-    BULLETS.splice( position, 1 );
-
-    bullet.clear();
+    GameMenu.updateMisses( MISSES_COUNT );
     }
 }
 

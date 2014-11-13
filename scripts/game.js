@@ -1,32 +1,29 @@
 var Game;
 (function (Game) {
     var CROSS_HAIR = null;
-    var TARGETS = [];
-    var BULLETS = [];
+    Game.TARGETS = []; //HERE
     var NEW_TARGET_INTERVAL = 1500;
     var NEW_TARGET_COUNT = 0;
-    var MOUSE_HELD = false;
-    var BULLET_INTERVAL = 200;
-    var BULLET_COUNT = BULLET_INTERVAL; // so that it fires a bullet from the start
-    var BULLETS_FIRED = 0;
-    var MOUSE_X = 0;
-    var MOUSE_Y = 0;
+    Game.MOUSE_HELD = false;
+    Game.MOUSE_X = 0;
+    Game.MOUSE_Y = 0;
     var HITS_COUNT = 0;
     var MISSES_COUNT = 0;
+    var CURRENT_WEAPON = null;
     function init() {
         CROSS_HAIR = new CrossHair();
+        CURRENT_WEAPON = new Weapon('machineGun');
         G.STAGE.on('stagemousemove', function (event) {
             CROSS_HAIR.moveTo(event.stageX, event.stageY);
-            MOUSE_X = event.stageX;
-            MOUSE_Y = event.stageY;
+            Game.MOUSE_X = event.stageX;
+            Game.MOUSE_Y = event.stageY;
         });
         document.body.addEventListener('mousedown', function (event) {
-            MOUSE_HELD = true;
+            Game.MOUSE_HELD = true;
         });
         document.body.addEventListener('mouseup', function (event) {
-            BULLETS_FIRED = 0;
-            BULLET_COUNT = BULLET_INTERVAL;
-            MOUSE_HELD = false;
+            CURRENT_WEAPON.stopFiring();
+            Game.MOUSE_HELD = false;
         });
         createjs.Ticker.on('tick', tick);
     }
@@ -38,17 +35,11 @@ var Game;
     Game.start = start;
     function clear() {
         var a;
-        for (a = 0; a < TARGETS.length; a++) {
-            TARGETS[a].clear();
+        for (a = 0; a < Game.TARGETS.length; a++) {
+            Game.TARGETS[a].clear();
         }
-        TARGETS.length = 0;
-        for (a = 0; a < BULLETS.length; a++) {
-            BULLETS[a].clear();
-        }
-        BULLETS.length = 0;
+        Game.TARGETS.length = 0;
         NEW_TARGET_COUNT = 0;
-        BULLET_COUNT = BULLET_INTERVAL;
-        BULLETS_FIRED = 0;
         HITS_COUNT = 0;
         MISSES_COUNT = 0;
     }
@@ -65,83 +56,37 @@ var Game;
             NEW_TARGET_COUNT = 0;
             Game.newTarget();
         }
-        // bullets
-        BULLET_COUNT += event.delta;
-        if (MOUSE_HELD && BULLET_COUNT >= BULLET_INTERVAL) {
-            BULLET_COUNT = 0;
-            BULLETS_FIRED++;
-            Game.newBullet();
-        }
-        // check if there are bullets/targets that timed out (and thus need to be removed)
+        // weapons
+        CURRENT_WEAPON.tick(event);
+        // check if there are targets that timed out (and thus need to be removed)
         var a;
-        for (a = BULLETS.length - 1; a >= 0; a--) {
-            if (BULLETS[a].tick(event)) {
-                Game.removeBullet(BULLETS[a]);
-            }
-        }
-        for (a = TARGETS.length - 1; a >= 0; a--) {
-            if (TARGETS[a].tick(event)) {
-                MISSES_COUNT++;
-                GameMenu.updateMisses(MISSES_COUNT);
-                Game.removeTarget(TARGETS[a]);
+        for (a = Game.TARGETS.length - 1; a >= 0; a--) {
+            if (Game.TARGETS[a].tick(event)) {
+                Game.oneMoreMiss();
+                Game.removeTarget(Game.TARGETS[a]);
             }
         }
     }
     function newTarget() {
         var x = Utilities.getRandomInt(0, G.CANVAS.width);
         var y = Utilities.getRandomInt(0, G.CANVAS.height);
-        TARGETS.push(new Target(x, y));
+        Game.TARGETS.push(new Target(x, y));
     }
     Game.newTarget = newTarget;
     function removeTarget(target) {
-        var position = TARGETS.indexOf(target);
-        TARGETS.splice(position, 1);
+        var position = Game.TARGETS.indexOf(target);
+        Game.TARGETS.splice(position, 1);
         target.clear();
     }
     Game.removeTarget = removeTarget;
-    function newBullet() {
-        var currentWeapon = Weapon.machineGun; //HERE
-        var variance = currentWeapon.variance;
-        var recoil = currentWeapon.recoil;
-        var bulletLength = Bullet.side_length;
-        var halfBulletLength = bulletLength / 2;
-        var centerX = MOUSE_X - halfBulletLength;
-        var centerY = MOUSE_Y - halfBulletLength;
-        var x = Utilities.getRandomInt(centerX - variance, centerX + variance);
-        var y = Utilities.getRandomInt(centerY - variance, centerY + variance);
-        // find the recoil info to be used for the current bullet (depends on the number of bullets fired in the current spray)
-        var recoilInfo = null;
-        var nextInfo = null;
-        for (var a = 0; a < recoil.length; a++) {
-            nextInfo = recoil[a];
-            if (BULLETS_FIRED < nextInfo.bullet) {
-                break;
-            }
-            recoilInfo = nextInfo;
-        }
-        if (recoilInfo !== null) {
-            x += recoilInfo.xOffset;
-            y += recoilInfo.yOffset;
-        }
-        var bullet = new Bullet(x, y);
-        BULLETS.push(bullet);
-        var bulletX = bullet.getX();
-        var bulletY = bullet.getY();
-        for (var a = TARGETS.length - 1; a >= 0; a--) {
-            var target = TARGETS[a];
-            if (Utilities.boxBoxCollision(bulletX, bulletY, bulletLength, bulletLength, target.getX(), target.getY(), target.length, target.length)) {
-                HITS_COUNT++;
-                GameMenu.updateHits(HITS_COUNT);
-                Game.removeTarget(target);
-                break;
-            }
-        }
+    function oneMoreHit() {
+        HITS_COUNT++;
+        GameMenu.updateHits(HITS_COUNT);
     }
-    Game.newBullet = newBullet;
-    function removeBullet(bullet) {
-        var position = BULLETS.indexOf(bullet);
-        BULLETS.splice(position, 1);
-        bullet.clear();
+    Game.oneMoreHit = oneMoreHit;
+    function oneMoreMiss() {
+        MISSES_COUNT++;
+        GameMenu.updateMisses(MISSES_COUNT);
     }
-    Game.removeBullet = removeBullet;
+    Game.oneMoreMiss = oneMoreMiss;
 })(Game || (Game = {}));
