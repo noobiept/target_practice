@@ -1,7 +1,7 @@
 module Game
 {
 var CROSS_HAIR = null;
-export var TARGETS = [];    //HERE
+var TARGETS = [];
 
 var NEW_TARGET_INTERVAL = 1500;
 var NEW_TARGET_COUNT = 0;
@@ -132,6 +132,24 @@ export function oneMoreMiss()
     MISSES_COUNT++;
 
     GameMenu.updateMisses( MISSES_COUNT );
+    }
+
+export function checkCollision( bulletX, bulletY, bulletLength )
+    {
+    var targetLength = Target.side_length;
+
+    for (var a = TARGETS.length - 1 ; a >= 0 ; a--)
+        {
+        var target = TARGETS[ a ];
+
+        if ( Utilities.boxBoxCollision( bulletX, bulletY, bulletLength, bulletLength, target.getX(), target.getY(), targetLength, targetLength ) )
+            {
+            Game.oneMoreHit();
+
+            Game.removeTarget( target );
+            break;
+            }
+        }
     }
 }
 

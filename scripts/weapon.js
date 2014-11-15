@@ -39,14 +39,8 @@ var Weapon = (function () {
         }
         var bullet = new Bullet(x, y);
         this.bullets.push(bullet);
-        for (var a = Game.TARGETS.length - 1; a >= 0; a--) {
-            var target = Game.TARGETS[a];
-            if (Utilities.boxBoxCollision(x, y, bulletLength, bulletLength, target.getX(), target.getY(), targetLength, targetLength)) {
-                Game.oneMoreHit();
-                Game.removeTarget(target);
-                break;
-            }
-        }
+        // check if we hit any target
+        Game.checkCollision(x, y, bulletLength);
         this.bullets_in_magazine--;
         GameMenu.updateBulletsLeft(this.bullets_in_magazine);
         if (this.bullets_in_magazine <= 0) {

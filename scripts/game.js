@@ -1,7 +1,7 @@
 var Game;
 (function (Game) {
     var CROSS_HAIR = null;
-    Game.TARGETS = []; //HERE
+    var TARGETS = [];
     var NEW_TARGET_INTERVAL = 1500;
     var NEW_TARGET_COUNT = 0;
     Game.MOUSE_HELD = false;
@@ -35,10 +35,10 @@ var Game;
     Game.start = start;
     function clear() {
         var a;
-        for (a = 0; a < Game.TARGETS.length; a++) {
-            Game.TARGETS[a].clear();
+        for (a = 0; a < TARGETS.length; a++) {
+            TARGETS[a].clear();
         }
-        Game.TARGETS.length = 0;
+        TARGETS.length = 0;
         NEW_TARGET_COUNT = 0;
         HITS_COUNT = 0;
         MISSES_COUNT = 0;
@@ -60,22 +60,22 @@ var Game;
         CURRENT_WEAPON.tick(event);
         // check if there are targets that timed out (and thus need to be removed)
         var a;
-        for (a = Game.TARGETS.length - 1; a >= 0; a--) {
-            if (Game.TARGETS[a].tick(event)) {
+        for (a = TARGETS.length - 1; a >= 0; a--) {
+            if (TARGETS[a].tick(event)) {
                 Game.oneMoreMiss();
-                Game.removeTarget(Game.TARGETS[a]);
+                Game.removeTarget(TARGETS[a]);
             }
         }
     }
     function newTarget() {
         var x = Utilities.getRandomInt(0, G.CANVAS.width - Target.side_length);
         var y = Utilities.getRandomInt(0, G.CANVAS.height - Target.side_length);
-        Game.TARGETS.push(new Target(x, y));
+        TARGETS.push(new Target(x, y));
     }
     Game.newTarget = newTarget;
     function removeTarget(target) {
-        var position = Game.TARGETS.indexOf(target);
-        Game.TARGETS.splice(position, 1);
+        var position = TARGETS.indexOf(target);
+        TARGETS.splice(position, 1);
         target.clear();
     }
     Game.removeTarget = removeTarget;
@@ -89,4 +89,16 @@ var Game;
         GameMenu.updateMisses(MISSES_COUNT);
     }
     Game.oneMoreMiss = oneMoreMiss;
+    function checkCollision(bulletX, bulletY, bulletLength) {
+        var targetLength = Target.side_length;
+        for (var a = TARGETS.length - 1; a >= 0; a--) {
+            var target = TARGETS[a];
+            if (Utilities.boxBoxCollision(bulletX, bulletY, bulletLength, bulletLength, target.getX(), target.getY(), targetLength, targetLength)) {
+                Game.oneMoreHit();
+                Game.removeTarget(target);
+                break;
+            }
+        }
+    }
+    Game.checkCollision = checkCollision;
 })(Game || (Game = {}));

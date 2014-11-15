@@ -36,7 +36,17 @@ static info = {
     }
 };
 
-info;       //HERE add interface
+info: {
+        magazine_capacity: number;
+        reload_duration: number;
+        bullet_interval: number;
+        variance: number;
+        recoil: {
+                bullet: number;
+                xOffset: number;
+                yOffset: number;
+            }[]
+    };
 bullets: Bullet[];
 reload_count: number;
 bullet_interval_count: number;
@@ -105,18 +115,7 @@ fireBullet()
 
 
         // check if we hit any target
-    for (var a = Game.TARGETS.length - 1 ; a >= 0 ; a--)
-        {
-        var target = Game.TARGETS[ a ];
-
-        if ( Utilities.boxBoxCollision( x, y, bulletLength, bulletLength, target.getX(), target.getY(), targetLength, targetLength ) )
-            {
-            Game.oneMoreHit();
-
-            Game.removeTarget( target );
-            break;
-            }
-        }
+    Game.checkCollision( x, y, bulletLength );
 
 
     this.bullets_in_magazine--;
