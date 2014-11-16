@@ -2,6 +2,8 @@ class Target
 {
 shape: createjs.Shape;
 duration_count: number;     // remove the target after a certain time has passed (and count as a miss)
+health: number;
+
 static duration = 3000;
 static side_length = 10;    // the width/height
 
@@ -15,7 +17,7 @@ static init( stage )
     }
 
 
-constructor( x: number, y: number )
+constructor( x: number, y: number, health = 1 )
     {
     var shape = new createjs.Shape();
     var length = Target.side_length;
@@ -33,7 +35,17 @@ constructor( x: number, y: number )
 
     this.duration_count = 0;
     this.shape = shape;
+    this.health = health;
     }
+
+
+tookDamage( damage )
+    {
+    this.health -= damage;
+
+    return this.health <= 0;
+    }
+
 
 tick( event )
     {

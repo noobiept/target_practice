@@ -46,6 +46,7 @@ var Game;
     Game.clear = clear;
     function restart() {
         Game.clear();
+        CURRENT_WEAPON.reset();
         Game.start();
     }
     Game.restart = restart;
@@ -70,7 +71,7 @@ var Game;
     function newTarget() {
         var x = Utilities.getRandomInt(0, G.CANVAS.width - Target.side_length);
         var y = Utilities.getRandomInt(0, G.CANVAS.height - Target.side_length);
-        TARGETS.push(new Target(x, y));
+        TARGETS.push(new Target(x, y, 2));
     }
     Game.newTarget = newTarget;
     function removeTarget(target) {
@@ -94,8 +95,10 @@ var Game;
         for (var a = TARGETS.length - 1; a >= 0; a--) {
             var target = TARGETS[a];
             if (Utilities.boxBoxCollision(bulletX, bulletY, bulletLength, bulletLength, target.getX(), target.getY(), targetLength, targetLength)) {
-                Game.oneMoreHit();
-                Game.removeTarget(target);
+                if (target.tookDamage(CURRENT_WEAPON.getDamageValue())) {
+                    Game.oneMoreHit();
+                    Game.removeTarget(target);
+                }
                 break;
             }
         }

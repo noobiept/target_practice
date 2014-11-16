@@ -70,6 +70,8 @@ export function clear()
 export function restart()
     {
     Game.clear();
+    CURRENT_WEAPON.reset();
+
     Game.start();
     }
 
@@ -107,7 +109,7 @@ export function newTarget()
     var x = Utilities.getRandomInt( 0, G.CANVAS.width - Target.side_length );
     var y = Utilities.getRandomInt( 0, G.CANVAS.height - Target.side_length );
 
-    TARGETS.push( new Target( x, y ) );
+    TARGETS.push( new Target( x, y, 2 ) );
     }
 
 export function removeTarget( target: Target )
@@ -144,9 +146,13 @@ export function checkCollision( bulletX, bulletY, bulletLength )
 
         if ( Utilities.boxBoxCollision( bulletX, bulletY, bulletLength, bulletLength, target.getX(), target.getY(), targetLength, targetLength ) )
             {
-            Game.oneMoreHit();
+            if ( target.tookDamage( CURRENT_WEAPON.getDamageValue() ) )
+                {
+                Game.oneMoreHit();
 
-            Game.removeTarget( target );
+                Game.removeTarget( target );
+                }
+
             break;
             }
         }

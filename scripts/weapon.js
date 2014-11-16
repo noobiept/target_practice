@@ -25,7 +25,7 @@ var Weapon = (function () {
         var y = Utilities.getRandomInt(centerY - variance, centerY + variance);
         // find the recoil info to be used for the current bullet (depends on the number of bullets fired in the current spray)
         var recoilInfo = null;
-        var nextInfo = null;
+        var nextInfo;
         for (var a = 0; a < recoil.length; a++) {
             nextInfo = recoil[a];
             if (this.bullets_fired < nextInfo.bullet) {
@@ -56,6 +56,9 @@ var Weapon = (function () {
         this.is_reloading = true;
         Message.show('Reloading..');
     };
+    /*
+        Clears the shape elements associated (call this when you aren't using the object anymore, just to clear)
+     */
     Weapon.prototype.clear = function () {
         var bullets = this.bullets;
         for (var a = 0; a < bullets.length; a++) {
@@ -63,8 +66,23 @@ var Weapon = (function () {
         }
         bullets.length = 0;
     };
+    /*
+        Resets the weapon, call this when you want to reuse the object.
+     */
+    Weapon.prototype.reset = function () {
+        this.clear();
+        this.reload_count = 0;
+        this.bullet_interval_count = this.info.bullet_interval;
+        this.is_reloading = false;
+        this.bullets_fired = 0;
+        this.bullets_in_magazine = this.info.magazine_capacity;
+        GameMenu.updateBulletsLeft(this.bullets_in_magazine);
+    };
     Weapon.prototype.stopFiring = function () {
         this.bullets_fired = 0;
+    };
+    Weapon.prototype.getDamageValue = function () {
+        return this.info.damage;
     };
     Weapon.prototype.tick = function (event) {
         this.bullet_interval_count += event.delta;
@@ -97,6 +115,7 @@ var Weapon = (function () {
     };
     Weapon.info = {
         machineGun: {
+            damage: 1,
             magazine_capacity: 30,
             reload_duration: 2000,
             bullet_interval: 200,
