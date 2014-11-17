@@ -5,16 +5,27 @@ var GameMenu;
     var BULLETS_LEFT = null;
     function init() {
         var container = document.querySelector('#GameMenu');
+        // restart //
         var restart = container.querySelector('#Restart');
-        var hits = container.querySelector('#HitsValue');
-        var misses = container.querySelector('#MissesValue');
-        var bulletsLeft = container.querySelector('#BulletsLeft');
         restart.onclick = function () {
             Game.restart();
         };
-        HITS = hits;
-        MISSES = misses;
-        BULLETS_LEFT = bulletsLeft;
+        // target health //
+        var targetHealth = container.querySelector('#TargetHealth');
+        var targetInput = targetHealth.querySelector('input');
+        var targetValue = targetHealth.querySelector('span');
+        var healthValue = Game.getTargetHealth();
+        targetInput.value = healthValue.toString();
+        targetValue.innerHTML = healthValue.toString();
+        targetInput.onchange = function (event) {
+            Game.setTargetHealth(parseInt(targetInput.value, 10));
+        };
+        targetInput.oninput = function (event) {
+            targetValue.innerHTML = targetInput.value;
+        };
+        HITS = container.querySelector('#HitsValue');
+        MISSES = container.querySelector('#MissesValue');
+        BULLETS_LEFT = container.querySelector('#BulletsLeft');
     }
     GameMenu.init = init;
     function updateHits(count) {

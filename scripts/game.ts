@@ -14,6 +14,8 @@ export var MOUSE_Y = 0;
 var HITS_COUNT = 0;
 var MISSES_COUNT = 0;
 
+var TARGET_HEALTH = 1;
+
 var CURRENT_WEAPON: Weapon = null;
 
 export function init()
@@ -109,7 +111,7 @@ export function newTarget()
     var x = Utilities.getRandomInt( 0, G.CANVAS.width - Target.side_length );
     var y = Utilities.getRandomInt( 0, G.CANVAS.height - Target.side_length );
 
-    TARGETS.push( new Target( x, y, 2 ) );
+    TARGETS.push( new Target( x, y, TARGET_HEALTH ) );
     }
 
 export function removeTarget( target: Target )
@@ -156,6 +158,20 @@ export function checkCollision( bulletX, bulletY, bulletLength )
             break;
             }
         }
+    }
+
+
+export function setTargetHealth( health )
+    {
+    TARGET_HEALTH = health;
+
+    Game.restart();
+    }
+
+
+export function getTargetHealth()
+    {
+    return TARGET_HEALTH;
     }
 }
 

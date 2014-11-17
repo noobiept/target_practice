@@ -9,6 +9,7 @@ var Game;
     Game.MOUSE_Y = 0;
     var HITS_COUNT = 0;
     var MISSES_COUNT = 0;
+    var TARGET_HEALTH = 1;
     var CURRENT_WEAPON = null;
     function init() {
         CROSS_HAIR = new CrossHair();
@@ -71,7 +72,7 @@ var Game;
     function newTarget() {
         var x = Utilities.getRandomInt(0, G.CANVAS.width - Target.side_length);
         var y = Utilities.getRandomInt(0, G.CANVAS.height - Target.side_length);
-        TARGETS.push(new Target(x, y, 2));
+        TARGETS.push(new Target(x, y, TARGET_HEALTH));
     }
     Game.newTarget = newTarget;
     function removeTarget(target) {
@@ -104,4 +105,13 @@ var Game;
         }
     }
     Game.checkCollision = checkCollision;
+    function setTargetHealth(health) {
+        TARGET_HEALTH = health;
+        Game.restart();
+    }
+    Game.setTargetHealth = setTargetHealth;
+    function getTargetHealth() {
+        return TARGET_HEALTH;
+    }
+    Game.getTargetHealth = getTargetHealth;
 })(Game || (Game = {}));

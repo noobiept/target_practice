@@ -12,4 +12,12 @@
     {
     -webkit-user-select: none;
     user-select: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    }
+
+#GameMenu > *
+    {
+    display: inline-block;
     }
