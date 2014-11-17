@@ -10,8 +10,6 @@ var Game;
     // game options
     var TARGET_HEALTH = 1;
     var TARGET_SPAWN_INTERVAL = 1500; // in milliseconds
-    var TARGET_DURATION = 3; //HERE
-    var CAN_RELOAD = true;
     var NEW_TARGET_COUNT = TARGET_SPAWN_INTERVAL; // so that it adds a target from the start
     var CURRENT_WEAPON = null;
     function init() {
@@ -126,22 +124,9 @@ var Game;
         return TARGET_SPAWN_INTERVAL;
     }
     Game.getTargetSpawnInterval = getTargetSpawnInterval;
-    function setTargetDuration(duration) {
-        TARGET_DURATION = duration;
-        Game.restart();
-    }
-    Game.setTargetDuration = setTargetDuration;
-    function getTargetDuration() {
-        return TARGET_DURATION;
-    }
-    Game.getTargetDuration = getTargetDuration;
     function setCanReload(value) {
-        CAN_RELOAD = value;
+        CURRENT_WEAPON.setCanReload(value);
         Game.restart();
     }
     Game.setCanReload = setCanReload;
-    function getCanReload() {
-        return CAN_RELOAD;
-    }
-    Game.getCanReload = getCanReload;
 })(Game || (Game = {}));

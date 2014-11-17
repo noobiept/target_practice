@@ -55,6 +55,7 @@ bullet_interval_count: number;
 is_reloading: boolean;
 bullets_fired: number;      // off the current spray
 bullets_in_magazine: number;
+can_reload: boolean;        // if we use bullets or not (just keep firing without ever need to reload)
 
 constructor( type )
     {
@@ -65,6 +66,7 @@ constructor( type )
     this.is_reloading = false;
     this.bullets_fired = 0;
     this.bullets_in_magazine = this.info.magazine_capacity;
+    this.can_reload = true;
 
     GameMenu.updateBulletsLeft( this.bullets_in_magazine );
     }
@@ -120,7 +122,10 @@ fireBullet()
     Game.checkCollision( x, y, bulletLength );
 
 
-    this.bullets_in_magazine--;
+    if ( this.can_reload )
+        {
+        this.bullets_in_magazine--;
+        }
 
     GameMenu.updateBulletsLeft( this.bullets_in_magazine );
 
@@ -192,6 +197,12 @@ stopFiring()
 getDamageValue()
     {
     return this.info.damage;
+    }
+
+
+setCanReload( value )
+    {
+    this.can_reload = value;
     }
 
 

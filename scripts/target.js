@@ -18,13 +18,19 @@ var Target = (function () {
         Target._container = new createjs.Container();
         stage.addChild(Target._container);
     };
+    Target.setDuration = function (duration) {
+        Target._duration = duration;
+    };
+    Target.getDuration = function () {
+        return Target._duration;
+    };
     Target.prototype.tookDamage = function (damage) {
         this.health -= damage;
         return this.health <= 0;
     };
     Target.prototype.tick = function (event) {
         this.duration_count += event.delta;
-        if (this.duration_count >= Target.duration) {
+        if (this.duration_count >= Target._duration) {
             return true;
         }
         return false;
@@ -38,7 +44,7 @@ var Target = (function () {
     Target.prototype.getY = function () {
         return this.shape.y;
     };
-    Target.duration = 3000;
+    Target._duration = 3000;
     Target.side_length = 10; // the width/height
     return Target;
 })();

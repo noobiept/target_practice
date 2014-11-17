@@ -14,8 +14,6 @@ var MISSES_COUNT = 0;
     // game options
 var TARGET_HEALTH = 1;
 var TARGET_SPAWN_INTERVAL = 1500;   // in milliseconds
-var TARGET_DURATION = 3;            //HERE
-var CAN_RELOAD = true;
 
 var NEW_TARGET_COUNT = TARGET_SPAWN_INTERVAL;   // so that it adds a target from the start
 
@@ -192,31 +190,11 @@ export function getTargetSpawnInterval()
     }
 
 
-export function setTargetDuration( duration )
-    {
-    TARGET_DURATION = duration;
-
-    Game.restart();
-    }
-
-
-export function getTargetDuration()
-    {
-    return TARGET_DURATION;
-    }
-
-
 export function setCanReload( value )
     {
-    CAN_RELOAD = value;
+    CURRENT_WEAPON.setCanReload( value );
 
     Game.restart();
-    }
-
-
-export function getCanReload()
-    {
-    return CAN_RELOAD;
     }
 }
 

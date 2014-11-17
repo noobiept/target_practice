@@ -4,7 +4,7 @@ shape: createjs.Shape;
 duration_count: number;     // remove the target after a certain time has passed (and count as a miss)
 health: number;
 
-static duration = 3000;
+static _duration = 3000;
 static side_length = 10;    // the width/height
 
 private static _container: createjs.Container;   // all targets will be added to this container
@@ -14,6 +14,18 @@ static init( stage )
     Target._container = new createjs.Container();
 
     stage.addChild( Target._container );
+    }
+
+
+static setDuration( duration )
+    {
+    Target._duration = duration;
+    }
+
+
+static getDuration()
+    {
+    return Target._duration;
     }
 
 
@@ -51,7 +63,7 @@ tick( event )
     {
     this.duration_count += event.delta;
 
-    if ( this.duration_count >= Target.duration )
+    if ( this.duration_count >= Target._duration )
         {
         return true;
         }

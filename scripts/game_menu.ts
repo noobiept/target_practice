@@ -24,7 +24,7 @@ export function init()
     var healthValue = Game.getTargetHealth().toString();
 
     targetInput.value = healthValue;
-    targetValue.innerHTML = healthValue;
+    targetValue.innerHTML = healthValue + 'hp';
 
     targetInput.onchange = function( event )
         {
@@ -32,7 +32,7 @@ export function init()
         };
     targetInput.oninput = function( event )
         {
-        targetValue.innerHTML = targetInput.value;
+        targetValue.innerHTML = targetInput.value + 'hp';
         };
 
 
@@ -49,7 +49,7 @@ export function init()
 
     spawnInput.onchange = function( event )
         {
-        Game.setTargetSpawnInterval( parseInt( spawnInput.value, 10 ) * 1000 );
+        Game.setTargetSpawnInterval( parseFloat( spawnInput.value ) * 1000 );
         };
     spawnInput.oninput = function( event )
         {
@@ -63,25 +63,27 @@ export function init()
     var durationInput = <HTMLInputElement> targetDuration.querySelector( 'input' );
     var durationValue = <HTMLSpanElement> targetDuration.querySelector( 'span' );
 
-    var currentDurationValue = Game.getTargetDuration().toString();
+    var currentDurationValue = ( Target.getDuration() / 1000 ).toFixed( 1 );
 
     durationInput.value = currentDurationValue;
-    durationValue.innerHTML = currentDurationValue;
+    durationValue.innerHTML = currentDurationValue + 's';
 
     durationInput.onchange = function( event )
         {
-        Game.setTargetDuration( parseInt( durationInput.value, 10 ) );
+        Target.setDuration( parseFloat( durationInput.value ) * 1000 );
+
+        Game.restart();
         };
     durationInput.oninput = function( event )
         {
-        durationValue.innerHTML = durationInput.value;
+        durationValue.innerHTML = parseFloat( durationInput.value ).toFixed( 1 ) + 's';
         };
 
         // reloading //
 
     var canReload = <HTMLInputElement> container.querySelector( '#CanReload' );
 
-    canReload.checked = Game.getCanReload();
+    canReload.checked = true;
     canReload.onchange = function( event )
         {
         Game.setCanReload( canReload.checked );

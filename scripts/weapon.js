@@ -7,6 +7,7 @@ var Weapon = (function () {
         this.is_reloading = false;
         this.bullets_fired = 0;
         this.bullets_in_magazine = this.info.magazine_capacity;
+        this.can_reload = true;
         GameMenu.updateBulletsLeft(this.bullets_in_magazine);
     }
     Weapon.prototype.fireBullet = function () {
@@ -41,7 +42,9 @@ var Weapon = (function () {
         this.bullets.push(bullet);
         // check if we hit any target
         Game.checkCollision(x, y, bulletLength);
-        this.bullets_in_magazine--;
+        if (this.can_reload) {
+            this.bullets_in_magazine--;
+        }
         GameMenu.updateBulletsLeft(this.bullets_in_magazine);
         if (this.bullets_in_magazine <= 0) {
             this.reload();
@@ -83,6 +86,9 @@ var Weapon = (function () {
     };
     Weapon.prototype.getDamageValue = function () {
         return this.info.damage;
+    };
+    Weapon.prototype.setCanReload = function (value) {
+        this.can_reload = value;
     };
     Weapon.prototype.tick = function (event) {
         this.bullet_interval_count += event.delta;
