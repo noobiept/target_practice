@@ -7,6 +7,7 @@
     <script type="text/javascript" src="libraries/easeljs-0.7.1.min.js"></script>
     <script type="text/javascript" src="libraries/utilities-1.2-min.js"></script>
 
+    <!-- CONCATENATE_START -->
     <script type="text/javascript" src="scripts/crosshair.js"></script>
     <script type="text/javascript" src="scripts/weapon.js"></script>
     <script type="text/javascript" src="scripts/bullet.js"></script>
@@ -15,6 +16,7 @@
     <script type="text/javascript" src="scripts/game_menu.js"></script>
     <script type="text/javascript" src="scripts/message.js"></script>
     <script type="text/javascript" src="scripts/main.js"></script>
+    <!-- CONCATENATE_END -->
 
     <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -38,7 +40,7 @@
             </li>
             <li id="TargetSpawnInterval">
                 <label for="SpawnInput">Target spawn interval</label>
-                <input id="SpawnInput" min="1" max="5" step="0.5" type="range" />
+                <input id="SpawnInput" min="0.5" max="5" step="0.5" type="range" />
                 <span class="value"></span>
             </li>
         </ul>

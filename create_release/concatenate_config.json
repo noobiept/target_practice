@@ -1,0 +1,12 @@
+{
+    "C:\\Users\\drk\\Dropbox\\projects\\target_practice": [
+        "scripts/crosshair.js",
+        "scripts/weapon.js",
+        "scripts/bullet.js",
+        "scripts/target.js",
+        "scripts/game.js",
+        "scripts/game_menu.js",
+        "scripts/message.js",
+        "scripts/main.js"
+    ]
+}

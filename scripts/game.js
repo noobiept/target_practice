@@ -44,11 +44,12 @@ var Game;
         NEW_TARGET_COUNT = TARGET_SPAWN_INTERVAL;
         HITS_COUNT = 0;
         MISSES_COUNT = 0;
+        CURRENT_WEAPON.reset();
+        Message.hide();
     }
     Game.clear = clear;
     function restart() {
         Game.clear();
-        CURRENT_WEAPON.reset();
         Game.start();
     }
     Game.restart = restart;

@@ -68,13 +68,14 @@ export function clear()
 
     HITS_COUNT = 0;
     MISSES_COUNT = 0;
+
+    CURRENT_WEAPON.reset();
+    Message.hide();
     }
 
 export function restart()
     {
     Game.clear();
-    CURRENT_WEAPON.reset();
-
     Game.start();
     }
 
