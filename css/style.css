@@ -30,12 +30,18 @@ body
 #GameMenu ul
     {
     list-style-type: none;
-    margin: 0;
+    margin: 7px 0;
     padding: 0;
     }
 
 #GameMenu ul > *
     {
     display: inline-block;
-    margin: 0 10px;
+    margin: 0 12px;
+    }
+
+.value
+    {
+    color: #5284b5;
+    font-weight: bold;
     }

@@ -26,25 +26,27 @@
         <ul>
             <li id="Restart" class="button">Restart</li>
 
-            <li>Hits: <span id="HitsValue"></span></li>
-            <li>Misses: <span id="MissesValue"></span></li>
-            <li>Bullets: <span id="BulletsLeft"></span></li>
+            <li>Hits: <span id="HitsValue" class="value"></span></li>
+            <li>Misses: <span id="MissesValue" class="value"></span></li>
+            <li>Bullets: <span id="BulletsLeft" class="value"></span></li>
         </ul>
         <ul>
             <li id="TargetHealth">
                 <label for="HealthInput">Target health</label>
                 <input id="HealthInput" min="1" max="5" type="range" />
-                <span></span>
+                <span class="value"></span>
             </li>
             <li id="TargetSpawnInterval">
                 <label for="SpawnInput">Target spawn interval</label>
                 <input id="SpawnInput" min="1" max="5" step="0.5" type="range" />
-                <span></span>
+                <span class="value"></span>
             </li>
+        </ul>
+        <ul>
             <li id="TargetDuration">
                 <label for="DurationInput">Target duration</label>
                 <input id="DurationInput" min="1" max="5" step="0.5" type="range" />
-                <span></span>
+                <span class="value"></span>
             </li>
             <li>
                 <label for="CanReload">Reloading</label>
