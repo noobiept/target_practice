@@ -3,9 +3,6 @@ module Game
 var CROSS_HAIR = null;
 var TARGETS = [];
 
-var NEW_TARGET_INTERVAL = 1500;
-var NEW_TARGET_COUNT = 0;
-
 export var MOUSE_HELD = false;
 
 export var MOUSE_X = 0;
@@ -14,7 +11,13 @@ export var MOUSE_Y = 0;
 var HITS_COUNT = 0;
 var MISSES_COUNT = 0;
 
+    // game options
 var TARGET_HEALTH = 1;
+var TARGET_SPAWN_INTERVAL = 1500;   // in milliseconds
+var TARGET_DURATION = 3;            //HERE
+var CAN_RELOAD = true;
+
+var NEW_TARGET_COUNT = TARGET_SPAWN_INTERVAL;   // so that it adds a target from the start
 
 var CURRENT_WEAPON: Weapon = null;
 
@@ -63,7 +66,7 @@ export function clear()
 
     TARGETS.length = 0;
 
-    NEW_TARGET_COUNT = 0;
+    NEW_TARGET_COUNT = TARGET_SPAWN_INTERVAL;
 
     HITS_COUNT = 0;
     MISSES_COUNT = 0;
@@ -82,7 +85,7 @@ function tick( event )
         // targets
     NEW_TARGET_COUNT += event.delta;
 
-    if ( NEW_TARGET_COUNT >= NEW_TARGET_INTERVAL )
+    if ( NEW_TARGET_COUNT >= TARGET_SPAWN_INTERVAL )
         {
         NEW_TARGET_COUNT = 0;
 
@@ -172,6 +175,48 @@ export function setTargetHealth( health )
 export function getTargetHealth()
     {
     return TARGET_HEALTH;
+    }
+
+
+export function setTargetSpawnInterval( interval )
+    {
+    TARGET_SPAWN_INTERVAL = interval;
+
+    Game.restart();
+    }
+
+
+export function getTargetSpawnInterval()
+    {
+    return TARGET_SPAWN_INTERVAL;
+    }
+
+
+export function setTargetDuration( duration )
+    {
+    TARGET_DURATION = duration;
+
+    Game.restart();
+    }
+
+
+export function getTargetDuration()
+    {
+    return TARGET_DURATION;
+    }
+
+
+export function setCanReload( value )
+    {
+    CAN_RELOAD = value;
+
+    Game.restart();
+    }
+
+
+export function getCanReload()
+    {
+    return CAN_RELOAD;
     }
 }
 

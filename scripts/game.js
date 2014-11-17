@@ -2,14 +2,17 @@ var Game;
 (function (Game) {
     var CROSS_HAIR = null;
     var TARGETS = [];
-    var NEW_TARGET_INTERVAL = 1500;
-    var NEW_TARGET_COUNT = 0;
     Game.MOUSE_HELD = false;
     Game.MOUSE_X = 0;
     Game.MOUSE_Y = 0;
     var HITS_COUNT = 0;
     var MISSES_COUNT = 0;
+    // game options
     var TARGET_HEALTH = 1;
+    var TARGET_SPAWN_INTERVAL = 1500; // in milliseconds
+    var TARGET_DURATION = 3; //HERE
+    var CAN_RELOAD = true;
+    var NEW_TARGET_COUNT = TARGET_SPAWN_INTERVAL; // so that it adds a target from the start
     var CURRENT_WEAPON = null;
     function init() {
         CROSS_HAIR = new CrossHair();
@@ -40,7 +43,7 @@ var Game;
             TARGETS[a].clear();
         }
         TARGETS.length = 0;
-        NEW_TARGET_COUNT = 0;
+        NEW_TARGET_COUNT = TARGET_SPAWN_INTERVAL;
         HITS_COUNT = 0;
         MISSES_COUNT = 0;
     }
@@ -54,7 +57,7 @@ var Game;
     function tick(event) {
         // targets
         NEW_TARGET_COUNT += event.delta;
-        if (NEW_TARGET_COUNT >= NEW_TARGET_INTERVAL) {
+        if (NEW_TARGET_COUNT >= TARGET_SPAWN_INTERVAL) {
             NEW_TARGET_COUNT = 0;
             Game.newTarget();
         }
@@ -114,4 +117,31 @@ var Game;
         return TARGET_HEALTH;
     }
     Game.getTargetHealth = getTargetHealth;
+    function setTargetSpawnInterval(interval) {
+        TARGET_SPAWN_INTERVAL = interval;
+        Game.restart();
+    }
+    Game.setTargetSpawnInterval = setTargetSpawnInterval;
+    function getTargetSpawnInterval() {
+        return TARGET_SPAWN_INTERVAL;
+    }
+    Game.getTargetSpawnInterval = getTargetSpawnInterval;
+    function setTargetDuration(duration) {
+        TARGET_DURATION = duration;
+        Game.restart();
+    }
+    Game.setTargetDuration = setTargetDuration;
+    function getTargetDuration() {
+        return TARGET_DURATION;
+    }
+    Game.getTargetDuration = getTargetDuration;
+    function setCanReload(value) {
+        CAN_RELOAD = value;
+        Game.restart();
+    }
+    Game.setCanReload = setCanReload;
+    function getCanReload() {
+        return CAN_RELOAD;
+    }
+    Game.getCanReload = getCanReload;
 })(Game || (Game = {}));

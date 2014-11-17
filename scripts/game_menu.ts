@@ -21,10 +21,10 @@ export function init()
     var targetInput = <HTMLInputElement> targetHealth.querySelector( 'input' );
     var targetValue = <HTMLSpanElement> targetHealth.querySelector( 'span' );
 
-    var healthValue = Game.getTargetHealth();
+    var healthValue = Game.getTargetHealth().toString();
 
-    targetInput.value = healthValue.toString();
-    targetValue.innerHTML = healthValue.toString();
+    targetInput.value = healthValue;
+    targetValue.innerHTML = healthValue;
 
     targetInput.onchange = function( event )
         {
@@ -35,6 +35,60 @@ export function init()
         targetValue.innerHTML = targetInput.value;
         };
 
+
+        // target spawn interval //
+
+    var spawnInterval = <HTMLElement> container.querySelector( '#TargetSpawnInterval' );
+    var spawnInput = <HTMLInputElement> spawnInterval.querySelector( 'input' );
+    var spawnValue = <HTMLSpanElement> spawnInterval.querySelector( 'span' );
+
+    var intervalValue = ( Game.getTargetSpawnInterval() / 1000 ).toFixed( 1 );
+
+    spawnInput.value = intervalValue;
+    spawnValue.innerHTML = intervalValue + 's';
+
+    spawnInput.onchange = function( event )
+        {
+        Game.setTargetSpawnInterval( parseInt( spawnInput.value, 10 ) * 1000 );
+        };
+    spawnInput.oninput = function( event )
+        {
+        spawnValue.innerHTML = parseFloat( spawnInput.value ).toFixed( 1 ) + 's';
+        };
+
+
+        // target duration //
+
+    var targetDuration = <HTMLElement> container.querySelector( '#TargetDuration' );
+    var durationInput = <HTMLInputElement> targetDuration.querySelector( 'input' );
+    var durationValue = <HTMLSpanElement> targetDuration.querySelector( 'span' );
+
+    var currentDurationValue = Game.getTargetDuration().toString();
+
+    durationInput.value = currentDurationValue;
+    durationValue.innerHTML = currentDurationValue;
+
+    durationInput.onchange = function( event )
+        {
+        Game.setTargetDuration( parseInt( durationInput.value, 10 ) );
+        };
+    durationInput.oninput = function( event )
+        {
+        durationValue.innerHTML = durationInput.value;
+        };
+
+        // reloading //
+
+    var canReload = <HTMLInputElement> container.querySelector( '#CanReload' );
+
+    canReload.checked = Game.getCanReload();
+    canReload.onchange = function( event )
+        {
+        Game.setCanReload( canReload.checked );
+        };
+
+
+        // other //
 
     HITS = <HTMLElement> container.querySelector( '#HitsValue' );
     MISSES = <HTMLElement> container.querySelector( '#MissesValue' );
