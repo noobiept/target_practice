@@ -1,10 +1,23 @@
+body
+    {
+    text-align: center;
+    }
+
 .button
     {
     cursor: pointer;
+    background-color: #8ddd82;
+    padding: 0 5px;
+    }
+
+.button:hover
+    {
+    background-color: #95ea8a;
     }
 
 #MainCanvas
     {
+    background-color: #dddddd;
     cursor: none;
     }
 
@@ -12,12 +25,17 @@
     {
     -webkit-user-select: none;
     user-select: none;
+    }
+
+#GameMenu ul
+    {
     list-style-type: none;
     margin: 0;
     padding: 0;
     }
 
-#GameMenu > *
+#GameMenu ul > *
     {
     display: inline-block;
+    margin: 0 10px;
     }

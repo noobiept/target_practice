@@ -22,16 +22,36 @@
 
     <canvas id="MainCanvas"></canvas>
 
-    <ul id="GameMenu">
-        <li id="Restart" class="button">Restart</li>
-        <li id="TargetHealth">
-            <label for="HealthInput">Target health</label>
-            <input id="HealthInput" min="1" max="5" type="range" />
-            <span></span>
-        </li>
-        <li>Hits: <span id="HitsValue"></span></li>
-        <li>Misses: <span id="MissesValue"></span></li>
-        <li>Bullets: <span id="BulletsLeft"></span></li>
-    </ul>
+    <div id="GameMenu">
+        <ul>
+            <li id="Restart" class="button">Restart</li>
+
+            <li>Hits: <span id="HitsValue"></span></li>
+            <li>Misses: <span id="MissesValue"></span></li>
+            <li>Bullets: <span id="BulletsLeft"></span></li>
+        </ul>
+        <ul>
+            <li id="TargetHealth">
+                <label for="HealthInput">Target health</label>
+                <input id="HealthInput" min="1" max="5" type="range" />
+                <span></span>
+            </li>
+            <li id="TargetSpawnInterval">
+                <label for="SpawnInput">Target spawn interval</label>
+                <input id="SpawnInput" min="1" max="5" type="range" />
+                <span></span>
+            </li>
+            <li id="TargetDuration">
+                <label for="DurationInput">Target duration</label>
+                <input id="DurationInput" min="1" max="5" type="range" />
+                <span></span>
+            </li>
+            <li>
+                <label for="Reloading">Reloading</label>
+                <input id="Reloading" type="checkbox" checked />
+            </li>
+        </ul>
+    </div>
+
 </body>
 </html>
