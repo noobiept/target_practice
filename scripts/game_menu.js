@@ -19,6 +19,7 @@ var GameMenu;
         targetValue.innerHTML = healthValue + 'hp';
         targetInput.onchange = function (event) {
             Game.setTargetHealth(parseInt(targetInput.value, 10));
+            targetValue.innerHTML = targetInput.value + 'hp';
         };
         targetInput.oninput = function (event) {
             targetValue.innerHTML = targetInput.value + 'hp';
@@ -32,6 +33,7 @@ var GameMenu;
         spawnValue.innerHTML = intervalValue + 's';
         spawnInput.onchange = function (event) {
             Game.setTargetSpawnInterval(parseFloat(spawnInput.value) * 1000);
+            spawnValue.innerHTML = parseFloat(spawnInput.value).toFixed(1) + 's';
         };
         spawnInput.oninput = function (event) {
             spawnValue.innerHTML = parseFloat(spawnInput.value).toFixed(1) + 's';
@@ -45,6 +47,7 @@ var GameMenu;
         durationValue.innerHTML = currentDurationValue + 's';
         durationInput.onchange = function (event) {
             Target.setDuration(parseFloat(durationInput.value) * 1000);
+            durationValue.innerHTML = parseFloat(durationInput.value).toFixed(1) + 's';
             Game.restart();
         };
         durationInput.oninput = function (event) {

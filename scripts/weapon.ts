@@ -83,10 +83,9 @@ fireBullet()
     var recoil = weaponInfo.recoil;
 
     var bulletLength = Bullet.side_length;
-    var targetLength = Target.side_length;
     var halfBulletLength = bulletLength / 2;
-    var centerX = Game.MOUSE_X - halfBulletLength;
-    var centerY = Game.MOUSE_Y - halfBulletLength;
+    var centerX = Math.round( Game.MOUSE_X - halfBulletLength );
+    var centerY = Math.round( Game.MOUSE_Y - halfBulletLength );
 
     var x = Utilities.getRandomInt( centerX - variance, centerX + variance );
     var y = Utilities.getRandomInt( centerY - variance, centerY + variance );
