@@ -9,8 +9,7 @@
 /// <reference path="message.ts" />
 var G = {
     CANVAS: null,
-    STAGE: null,
-    PRELOAD: null
+    STAGE: null
 };
 window.onload = function () {
     G.CANVAS = document.querySelector('#MainCanvas');
