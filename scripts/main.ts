@@ -10,8 +10,7 @@
 
 var G = {
     CANVAS: null,
-    STAGE: null,
-    PRELOAD: null
+    STAGE: null
 };
 
 
