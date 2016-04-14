@@ -1,4 +1,5 @@
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../typings/browser.d.ts" />
+/// <reference path="../typings/utilities-1.2.d.ts" />
 /// <reference path="crosshair.ts" />
 /// <reference path="target.ts" />
 /// <reference path="bullet.ts" />

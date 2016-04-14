@@ -155,4 +155,4 @@ var Weapon = (function () {
         }
     };
     return Weapon;
-})();
+}());

@@ -34,4 +34,4 @@ var Bullet = (function () {
     Bullet.duration = 700; // the duration of the bullets
     Bullet.side_length = 10; // the width/height (its the same value)
     return Bullet;
-})();
+}());

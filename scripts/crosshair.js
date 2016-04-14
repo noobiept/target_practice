@@ -21,4 +21,4 @@ var CrossHair = (function () {
         CrossHair._container.removeChild(this.shape);
     };
     return CrossHair;
-})();
+}());

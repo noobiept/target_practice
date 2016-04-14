@@ -47,4 +47,4 @@ var Target = (function () {
     Target._duration = 3000;
     Target.side_length = 10; // the width/height
     return Target;
-})();
+}());
