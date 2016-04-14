@@ -17,6 +17,7 @@ window.onload = function () {
     G.CANVAS.height = 400;
     G.STAGE = new createjs.Stage(G.CANVAS);
     G.STAGE.mouseMoveOutside = true;
+    createjs.Ticker.timingMode = createjs.Ticker.RAF;
     GameMenu.init();
     // the order here sets the z-index of the elements
     // for example, right now the bullets will always be on top of the targets

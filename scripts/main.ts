@@ -22,6 +22,8 @@ G.CANVAS.height = 400;
 G.STAGE = new createjs.Stage( G.CANVAS );
 G.STAGE.mouseMoveOutside = true;
 
+createjs.Ticker.timingMode = createjs.Ticker.RAF;
+
 GameMenu.init();
 
     // the order here sets the z-index of the elements
