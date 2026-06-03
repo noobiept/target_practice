@@ -1,3 +1,5 @@
+import { addToGameLoop } from '@drk4/game-engine';
+import { boxBoxCollision, getRandomInt } from '@drk4/utilities';
 import { Bullet } from './bullet';
 import { CrossHair } from './crosshair';
 import { G } from './globals';
@@ -30,12 +32,18 @@ export function init()
     CROSS_HAIR = new CrossHair();
     CURRENT_WEAPON = new Weapon( 'machineGun' );
 
-    G.STAGE.on( 'stagemousemove', function( event: any )
-        {
-        CROSS_HAIR.moveTo( event.stageX, event.stageY );
+    var canvas = G.CANVAS.getHtmlCanvasElement();
 
-        MOUSE_X = event.stageX;
-        MOUSE_Y = event.stageY;
+    canvas.addEventListener( 'mousemove', function( event )
+        {
+        var bounds = canvas.getBoundingClientRect();
+        var x = event.clientX - bounds.left;
+        var y = event.clientY - bounds.top;
+
+        CROSS_HAIR.moveTo( x, y );
+
+        MOUSE_X = x;
+        MOUSE_Y = y;
         });
 
     document.body.addEventListener( 'mousedown', function( event )
@@ -49,7 +57,10 @@ export function init()
         MOUSE_HELD = false;
         });
 
-    createjs.Ticker.on( 'tick', tick );
+    addToGameLoop( function( deltaTime )
+        {
+        tick( deltaTime * 1000 );
+        });
     }
 
 export function start()
@@ -85,10 +96,10 @@ export function restart()
     start();
     }
 
-function tick( event )
+function tick( deltaMs: number )
     {
         // targets
-    NEW_TARGET_COUNT += event.delta;
+    NEW_TARGET_COUNT += deltaMs;
 
     if ( NEW_TARGET_COUNT >= TARGET_SPAWN_INTERVAL )
         {
@@ -98,14 +109,14 @@ function tick( event )
         }
 
         // weapons
-    CURRENT_WEAPON.tick( event );
+    CURRENT_WEAPON.tick( deltaMs );
 
         // check if there are targets that timed out (and thus need to be removed)
     var a;
 
     for (a = TARGETS.length - 1 ; a >= 0 ; a--)
         {
-        if ( TARGETS[ a ].tick( event ) )
+        if ( TARGETS[ a ].tick( deltaMs ) )
             {
             oneMoreMiss();
 
@@ -116,8 +127,8 @@ function tick( event )
 
 export function newTarget()
     {
-    var x = Utilities.getRandomInt( 0, G.CANVAS.width - Target.side_length );
-    var y = Utilities.getRandomInt( 0, G.CANVAS.height - Target.side_length );
+    var x = getRandomInt( 0, G.CANVAS.width - Target.side_length );
+    var y = getRandomInt( 0, G.CANVAS.height - Target.side_length );
 
     TARGETS.push( new Target( x, y, TARGET_HEALTH ) );
     }
@@ -154,7 +165,7 @@ export function checkCollision( bulletX, bulletY, bulletLength )
         {
         var target = TARGETS[ a ];
 
-        if ( Utilities.boxBoxCollision( bulletX, bulletY, bulletLength, bulletLength, target.getX(), target.getY(), targetLength, targetLength ) )
+        if ( boxBoxCollision( bulletX, bulletY, bulletLength, bulletLength, target.getX(), target.getY(), targetLength, targetLength ) )
             {
             if ( target.tookDamage( CURRENT_WEAPON.getDamageValue() ) )
                 {

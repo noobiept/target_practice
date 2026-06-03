@@ -1,2 +1,5 @@
 allowBuilds:
   esbuild: true
+minimumReleaseAgeExclude:
+  - '@drk4/game-engine@3.0.2'
+  - '@drk4/utilities@7.0.1'

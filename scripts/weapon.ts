@@ -1,3 +1,4 @@
+import { getRandomInt } from '@drk4/utilities';
 import { Bullet } from './bullet';
 import * as Game from './game';
 import * as GameMenu from './game_menu';
@@ -92,8 +93,8 @@ fireBullet()
     var centerX = Math.round( Game.MOUSE_X - halfBulletLength );
     var centerY = Math.round( Game.MOUSE_Y - halfBulletLength );
 
-    var x = Utilities.getRandomInt( centerX - variance, centerX + variance );
-    var y = Utilities.getRandomInt( centerY - variance, centerY + variance );
+    var x = getRandomInt( centerX - variance, centerX + variance );
+    var y = getRandomInt( centerY - variance, centerY + variance );
 
         // find the recoil info to be used for the current bullet (depends on the number of bullets fired in the current spray)
     var recoilInfo = null;
@@ -210,9 +211,9 @@ setCanReload( value )
     }
 
 
-tick( event )
+tick( deltaMs: number )
     {
-    this.bullet_interval_count += event.delta;
+    this.bullet_interval_count += deltaMs;
 
     if ( Game.MOUSE_HELD && !this.is_reloading )
         {
@@ -230,7 +231,7 @@ tick( event )
 
     for (var a = bullets.length - 1 ; a >= 0 ; a--)
         {
-        if ( bullets[ a ].tick( event ) )
+        if ( bullets[ a ].tick( deltaMs ) )
             {
             this.removeBullet( bullets[ a ] );
             }
@@ -239,7 +240,7 @@ tick( event )
         // deal with the reloading of the weapon (if its currently going)
     if ( this.is_reloading )
         {
-        this.reload_count += event.delta;
+        this.reload_count += deltaMs;
 
             // reload finished
         if ( this.reload_count >= this.info.reload_duration )

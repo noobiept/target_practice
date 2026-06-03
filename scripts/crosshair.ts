@@ -1,27 +1,28 @@
+import { Circle, Container, addElement } from '@drk4/game-engine';
+
 export class CrossHair
 {
-shape: createjs.Shape;
+shape: Circle;
 
-private static _container: createjs.Container;
+private static _container: Container;
 
-static init( stage )
+static init()
     {
-    CrossHair._container = new createjs.Container();
+    CrossHair._container = new Container();
 
-    stage.addChild( CrossHair._container );
+    addElement( CrossHair._container );
     }
 
 constructor()
     {
     var radius = 3;
 
-    var shape = new createjs.Shape();
-
-    var g = shape.graphics;
-
-    g.beginFill( 'black' );
-    g.drawCircle( 0, 0, radius );
-    g.endFill();
+    var shape = new Circle({
+        x: 0,
+        y: 0,
+        radius: radius,
+        color: 'black'
+    });
 
     CrossHair._container.addChild( shape );
 

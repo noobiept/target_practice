@@ -1,32 +1,31 @@
+import { Container, Rectangle, addElement } from '@drk4/game-engine';
+
 export class Bullet
 {
-shape: createjs.Shape;
+shape: Rectangle;
 duration_count: number;     // remove the bullet after a certain time/duration has passed
 static duration = 700;    // the duration of the bullets
 
 static side_length = 10;     // the width/height (its the same value)
 
-private static _container: createjs.Container;
+private static _container: Container;
 
-static init( stage )
+static init()
     {
-    Bullet._container = new createjs.Container();
+    Bullet._container = new Container();
 
-    stage.addChild( Bullet._container );
+    addElement( Bullet._container );
     }
 
 constructor( x: number, y: number )
     {
-    var shape = new createjs.Shape();
-
-    shape.x = x;
-    shape.y = y;
-
-    var g = shape.graphics;
-
-    g.beginFill( 'blue' );
-    g.drawRect( 0, 0, Bullet.side_length, Bullet.side_length );
-    g.endFill();
+    var shape = new Rectangle({
+        x: x + Bullet.side_length / 2,
+        y: y + Bullet.side_length / 2,
+        width: Bullet.side_length,
+        height: Bullet.side_length,
+        color: 'blue'
+    });
 
     Bullet._container.addChild( shape );
 
@@ -34,9 +33,9 @@ constructor( x: number, y: number )
     this.shape = shape;
     }
 
-tick( event )
+tick( deltaMs: number )
     {
-    this.duration_count += event.delta;
+    this.duration_count += deltaMs;
 
     if ( this.duration_count >= Bullet.duration )
         {
@@ -53,11 +52,11 @@ clear()
 
 getX()
     {
-    return this.shape.x;
+    return this.shape.left;
     }
 
 getY()
     {
-    return this.shape.y;
+    return this.shape.top;
     }
 }

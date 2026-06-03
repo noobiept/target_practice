@@ -15,7 +15,7 @@ body
     background-color: #95ea8a;
     }
 
-#MainCanvas
+#GameCanvas canvas
     {
     background-color: #dddddd;
     cursor: none;

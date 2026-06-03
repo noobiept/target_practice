@@ -1,7 +1,7 @@
+import type { Canvas } from '@drk4/game-engine';
+
 export const G: {
-    CANVAS: HTMLCanvasElement;
-    STAGE: createjs.Stage;
+    CANVAS: Canvas;
 } = {
-    CANVAS: null,
-    STAGE: null
+    CANVAS: null
 };

@@ -1,19 +1,21 @@
+import { Container, Rectangle, addElement } from '@drk4/game-engine';
+
 export class Target
 {
-shape: createjs.Shape;
+shape: Rectangle;
 duration_count: number;     // remove the target after a certain time has passed (and count as a miss)
 health: number;
 
 static _duration = 3000;
 static side_length = 10;    // the width/height
 
-private static _container: createjs.Container;   // all targets will be added to this container
+private static _container: Container;   // all targets will be added to this container
 
-static init( stage )
+static init()
     {
-    Target._container = new createjs.Container();
+    Target._container = new Container();
 
-    stage.addChild( Target._container );
+    addElement( Target._container );
     }
 
 
@@ -31,17 +33,15 @@ static getDuration()
 
 constructor( x: number, y: number, health = 1 )
     {
-    var shape = new createjs.Shape();
     var length = Target.side_length;
 
-    shape.x = x;
-    shape.y = y;
-
-    var g = shape.graphics;
-
-    g.beginFill( 'red' );
-    g.drawRect( 0, 0, length, length );
-    g.endFill();
+    var shape = new Rectangle({
+        x: x + length / 2,
+        y: y + length / 2,
+        width: length,
+        height: length,
+        color: 'red'
+    });
 
     Target._container.addChild( shape );
 
@@ -59,9 +59,9 @@ tookDamage( damage )
     }
 
 
-tick( event )
+tick( deltaMs: number )
     {
-    this.duration_count += event.delta;
+    this.duration_count += deltaMs;
 
     if ( this.duration_count >= Target._duration )
         {
@@ -78,11 +78,11 @@ clear()
 
 getX()
     {
-    return this.shape.x;
+    return this.shape.left;
     }
 
 getY()
     {
-    return this.shape.y;
+    return this.shape.top;
     }
 }

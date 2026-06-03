@@ -1,37 +1,42 @@
+import { Container, Rectangle, Text, addElement } from '@drk4/game-engine';
+import { Timeout } from '@drk4/utilities';
 import { G } from './globals';
 
-var CONTAINER: createjs.Container;
-var TEXT: createjs.Text;
-var BACKGROUND: createjs.Shape;
-var TIMEOUT: Utilities.Timeout;
+var CONTAINER: Container;
+var TEXT: Text;
+var BACKGROUND: Rectangle;
+var TIMEOUT: Timeout;
 
-export function init( stage )
+export function init()
     {
     var canvasWidth = G.CANVAS.width;
     var canvasHeight = G.CANVAS.height;
 
         // container
-    CONTAINER = new createjs.Container();
+    CONTAINER = new Container();
 
-    stage.addChild( CONTAINER );
+    addElement( CONTAINER );
 
         // text element
-    TEXT = new createjs.Text( '', '26px monospace' );
-    TEXT.textAlign = 'center';
-    TEXT.x = canvasWidth / 2;
-    TEXT.y = canvasHeight / 2;
+    TEXT = new Text({
+        text: '',
+        fontSize: 26,
+        fontFamily: 'monospace',
+        textAlign: 'center',
+        textBaseline: 'middle',
+        color: 'black',
+        x: canvasWidth / 2,
+        y: canvasHeight / 2 + 15
+    });
 
         // background element
-    BACKGROUND = new createjs.Shape();
-
-    var g = BACKGROUND.graphics;
-
-    g.beginFill( 'rgb(161,170,227)' );
-    g.drawRect( 0, 0, canvasWidth, 30 );
-    g.endFill();
-
-    BACKGROUND.x = 0;
-    BACKGROUND.y = canvasHeight / 2;
+    BACKGROUND = new Rectangle({
+        x: canvasWidth / 2,
+        y: canvasHeight / 2 + 15,
+        width: canvasWidth,
+        height: 30,
+        color: 'rgb(161,170,227)'
+    });
 
     CONTAINER.addChild( BACKGROUND );
     CONTAINER.addChild( TEXT );
@@ -39,7 +44,7 @@ export function init( stage )
     CONTAINER.visible = false;
 
         // timeout
-    TIMEOUT = new Utilities.Timeout();
+    TIMEOUT = new Timeout();
     }
 
 
