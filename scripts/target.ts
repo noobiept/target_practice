@@ -1,4 +1,4 @@
-class Target
+export class Target
 {
 shape: createjs.Shape;
 duration_count: number;     // remove the target after a certain time has passed (and count as a miss)

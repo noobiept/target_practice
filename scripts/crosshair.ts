@@ -1,4 +1,4 @@
-class CrossHair
+export class CrossHair
 {
 shape: createjs.Shape;
 

@@ -1,5 +1,5 @@
-module Message
-{
+import { G } from './globals';
+
 var CONTAINER: createjs.Container;
 var TEXT: createjs.Text;
 var BACKGROUND: createjs.Shape;
@@ -68,4 +68,3 @@ export function hide()
     TIMEOUT.clear();
     CONTAINER.visible = false;
     }
-}

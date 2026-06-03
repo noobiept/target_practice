@@ -1,7 +1,13 @@
-module Game
-{
+import { Bullet } from './bullet';
+import { CrossHair } from './crosshair';
+import { G } from './globals';
+import * as GameMenu from './game_menu';
+import * as Message from './message';
+import { Target } from './target';
+import { Weapon } from './weapon';
+
 var CROSS_HAIR = null;
-var TARGETS = [];
+var TARGETS: Target[] = [];
 
 export var MOUSE_HELD = false;
 
@@ -24,7 +30,7 @@ export function init()
     CROSS_HAIR = new CrossHair();
     CURRENT_WEAPON = new Weapon( 'machineGun' );
 
-    G.STAGE.on( 'stagemousemove', function( event )
+    G.STAGE.on( 'stagemousemove', function( event: any )
         {
         CROSS_HAIR.moveTo( event.stageX, event.stageY );
 
@@ -75,8 +81,8 @@ export function clear()
 
 export function restart()
     {
-    Game.clear();
-    Game.start();
+    clear();
+    start();
     }
 
 function tick( event )
@@ -88,7 +94,7 @@ function tick( event )
         {
         NEW_TARGET_COUNT = 0;
 
-        Game.newTarget();
+        newTarget();
         }
 
         // weapons
@@ -101,9 +107,9 @@ function tick( event )
         {
         if ( TARGETS[ a ].tick( event ) )
             {
-            Game.oneMoreMiss();
+            oneMoreMiss();
 
-            Game.removeTarget( TARGETS[ a ] );
+            removeTarget( TARGETS[ a ] );
             }
         }
     }
@@ -152,9 +158,9 @@ export function checkCollision( bulletX, bulletY, bulletLength )
             {
             if ( target.tookDamage( CURRENT_WEAPON.getDamageValue() ) )
                 {
-                Game.oneMoreHit();
+                oneMoreHit();
 
-                Game.removeTarget( target );
+                removeTarget( target );
                 }
 
             break;
@@ -167,7 +173,7 @@ export function setTargetHealth( health )
     {
     TARGET_HEALTH = health;
 
-    Game.restart();
+    restart();
     }
 
 
@@ -181,7 +187,7 @@ export function setTargetSpawnInterval( interval )
     {
     TARGET_SPAWN_INTERVAL = interval;
 
-    Game.restart();
+    restart();
     }
 
 
@@ -195,8 +201,7 @@ export function setCanReload( value )
     {
     CURRENT_WEAPON.setCanReload( value );
 
-    Game.restart();
+    restart();
     }
-}
 
 

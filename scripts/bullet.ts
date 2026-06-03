@@ -1,4 +1,4 @@
-class Bullet
+export class Bullet
 {
 shape: createjs.Shape;
 duration_count: number;     // remove the bullet after a certain time/duration has passed

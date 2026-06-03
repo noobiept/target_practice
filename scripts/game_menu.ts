@@ -1,5 +1,6 @@
-module GameMenu
-{
+import * as Game from './game';
+import { Target } from './target';
+
 var HITS: HTMLElement = null;
 var MISSES: HTMLElement = null;
 var BULLETS_LEFT: HTMLElement = null;
@@ -119,4 +120,3 @@ export function clear()
     {
     HITS.innerHTML = MISSES.innerHTML = '0';
     }
-}

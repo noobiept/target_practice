@@ -1,4 +1,9 @@
-class Weapon
+import { Bullet } from './bullet';
+import * as Game from './game';
+import * as GameMenu from './game_menu';
+import * as Message from './message';
+
+export class Weapon
 {
 static info = {
     machineGun: {
