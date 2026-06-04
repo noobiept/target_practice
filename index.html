@@ -1,49 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>Target Practice</title>
+    <head>
+        <meta charset="utf-8" />
+        <title>Target Practice</title>
 
-    <script type="module" src="source/main.ts"></script>
+        <script type="module" src="source/main.ts"></script>
 
-    <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <div id="GameCanvas"></div>
 
-    <div id="GameCanvas"></div>
+        <div id="GameMenu">
+            <ul>
+                <li id="Restart" class="button">Restart</li>
 
-    <div id="GameMenu">
-        <ul>
-            <li id="Restart" class="button">Restart</li>
-
-            <li>Hits: <span id="HitsValue" class="value"></span></li>
-            <li>Misses: <span id="MissesValue" class="value"></span></li>
-            <li>Bullets: <span id="BulletsLeft" class="value"></span></li>
-        </ul>
-        <ul>
-            <li id="TargetHealth">
-                <label for="HealthInput">Target health</label>
-                <input id="HealthInput" min="1" max="5" type="range" />
-                <span class="value"></span>
-            </li>
-            <li id="TargetSpawnInterval">
-                <label for="SpawnInput">Target spawn interval</label>
-                <input id="SpawnInput" min="0.5" max="5" step="0.5" type="range" />
-                <span class="value"></span>
-            </li>
-        </ul>
-        <ul>
-            <li id="TargetDuration">
-                <label for="DurationInput">Target duration</label>
-                <input id="DurationInput" min="1" max="5" step="0.5" type="range" />
-                <span class="value"></span>
-            </li>
-            <li>
-                <label for="CanReload">Reloading</label>
-                <input id="CanReload" type="checkbox" checked />
-            </li>
-        </ul>
-    </div>
-
-</body>
+                <li>Hits: <span id="HitsValue" class="value"></span></li>
+                <li>Misses: <span id="MissesValue" class="value"></span></li>
+                <li>Bullets: <span id="BulletsLeft" class="value"></span></li>
+            </ul>
+            <ul>
+                <li id="TargetHealth">
+                    <label for="HealthInput">Target health</label>
+                    <input id="HealthInput" min="1" max="5" type="range" />
+                    <span class="value"></span>
+                </li>
+                <li id="TargetSpawnInterval">
+                    <label for="SpawnInput">Target spawn interval</label>
+                    <input
+                        id="SpawnInput"
+                        min="0.5"
+                        max="5"
+                        step="0.5"
+                        type="range"
+                    />
+                    <span class="value"></span>
+                </li>
+            </ul>
+            <ul>
+                <li id="TargetDuration">
+                    <label for="DurationInput">Target duration</label>
+                    <input
+                        id="DurationInput"
+                        min="1"
+                        max="5"
+                        step="0.5"
+                        type="range"
+                    />
+                    <span class="value"></span>
+                </li>
+                <li>
+                    <label for="CanReload">Reloading</label>
+                    <input id="CanReload" type="checkbox" checked />
+                </li>
+            </ul>
+        </div>
+    </body>
 </html>

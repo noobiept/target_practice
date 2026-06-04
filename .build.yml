@@ -1,0 +1,20 @@
+image: ubuntu/lts
+
+packages:
+    - curl
+
+environment:
+    MISE_COLOR: '0'
+    MISE_YES: '1'
+
+tasks:
+    - setup: |
+          curl https://mise.run | MISE_INSTALL_PATH="$HOME/.local/bin/mise" sh
+          cd target_practice
+          "$HOME/.local/bin/mise" install
+    - install: |
+          cd target_practice
+          "$HOME/.local/bin/mise" exec -- pnpm install --frozen-lockfile
+    - check: |
+          cd target_practice
+          "$HOME/.local/bin/mise" exec -- pnpm run check

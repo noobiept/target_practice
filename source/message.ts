@@ -7,17 +7,16 @@ var TEXT: Text;
 var BACKGROUND: Rectangle;
 var TIMEOUT: Timeout;
 
-export function init()
-    {
+export function init() {
     var canvasWidth = G.CANVAS.width;
     var canvasHeight = G.CANVAS.height;
 
-        // container
+    // container
     CONTAINER = new Container();
 
-    addElement( CONTAINER );
+    addElement(CONTAINER);
 
-        // text element
+    // text element
     TEXT = new Text({
         text: '',
         fontSize: 26,
@@ -26,50 +25,43 @@ export function init()
         textBaseline: 'middle',
         color: 'black',
         x: canvasWidth / 2,
-        y: canvasHeight / 2 + 15
+        y: canvasHeight / 2 + 15,
     });
 
-        // background element
+    // background element
     BACKGROUND = new Rectangle({
         x: canvasWidth / 2,
         y: canvasHeight / 2 + 15,
         width: canvasWidth,
         height: 30,
-        color: 'rgb(161,170,227)'
+        color: 'rgb(161,170,227)',
     });
 
-    CONTAINER.addChild( BACKGROUND );
-    CONTAINER.addChild( TEXT );
+    CONTAINER.addChild(BACKGROUND);
+    CONTAINER.addChild(TEXT);
 
     CONTAINER.visible = false;
 
-        // timeout
+    // timeout
     TIMEOUT = new Timeout();
-    }
+}
 
-
-export function show( text, timeout?, callback? )
-    {
+export function show(text, timeout?, callback?) {
     TEXT.text = text;
     CONTAINER.visible = true;
 
-    if ( typeof timeout !== 'undefined' )
-        {
-        TIMEOUT.start( function()
-            {
-            if ( typeof callback !== 'undefined' )
-                {
+    if (typeof timeout !== 'undefined') {
+        TIMEOUT.start(function () {
+            if (typeof callback !== 'undefined') {
                 callback();
-                }
+            }
 
             CONTAINER.visible = false;
-
-            }, timeout );
-        }
+        }, timeout);
     }
+}
 
-export function hide()
-    {
+export function hide() {
     TIMEOUT.clear();
     CONTAINER.visible = false;
-    }
+}

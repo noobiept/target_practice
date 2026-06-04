@@ -1,47 +1,39 @@
-body
-    {
+body {
     text-align: center;
-    }
+}
 
-.button
-    {
+.button {
     cursor: pointer;
     background-color: #8ddd82;
     padding: 0 5px;
-    }
+}
 
-.button:hover
-    {
+.button:hover {
     background-color: #95ea8a;
-    }
+}
 
-#GameCanvas canvas
-    {
+#GameCanvas canvas {
     background-color: #dddddd;
     cursor: none;
-    }
+}
 
-#GameMenu
-    {
+#GameMenu {
     -webkit-user-select: none;
     user-select: none;
-    }
+}
 
-#GameMenu ul
-    {
+#GameMenu ul {
     list-style-type: none;
     margin: 7px 0;
     padding: 0;
-    }
+}
 
-#GameMenu ul > *
-    {
+#GameMenu ul > * {
     display: inline-block;
     margin: 0 12px;
-    }
+}
 
-.value
-    {
+.value {
     color: #5284b5;
     font-weight: bold;
-    }
+}
