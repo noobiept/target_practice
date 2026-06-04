@@ -1,9 +1,4 @@
-import * as Game from './game';
-import { Target } from './target';
-
-let HITS: HTMLElement;
-let MISSES: HTMLElement;
-let BULLETS_LEFT: HTMLElement;
+import type { GameController, GameHud } from './game_contracts';
 
 function getElement<T extends Element>(
     parent: ParentNode,
@@ -18,111 +13,118 @@ function getElement<T extends Element>(
     return element;
 }
 
-export function init(): void {
-    const container = getElement<HTMLElement>(document, '#GameMenu');
+export class GameMenu implements GameHud {
+    private readonly restart: HTMLElement;
+    private readonly targetInput: HTMLInputElement;
+    private readonly targetValue: HTMLSpanElement;
+    private readonly spawnInput: HTMLInputElement;
+    private readonly spawnValue: HTMLSpanElement;
+    private readonly durationInput: HTMLInputElement;
+    private readonly durationValue: HTMLSpanElement;
+    private readonly canReload: HTMLInputElement;
+    private readonly hits: HTMLElement;
+    private readonly misses: HTMLElement;
+    private readonly bulletsLeft: HTMLElement;
 
-    // restart //
-    const restart = getElement<HTMLElement>(container, '#Restart');
+    constructor(parent: ParentNode) {
+        const container = getElement<HTMLElement>(parent, '#GameMenu');
+        const targetHealth = getElement<HTMLElement>(
+            container,
+            '#TargetHealth',
+        );
+        const spawnInterval = getElement<HTMLElement>(
+            container,
+            '#TargetSpawnInterval',
+        );
+        const targetDuration = getElement<HTMLElement>(
+            container,
+            '#TargetDuration',
+        );
 
-    restart.onclick = function () {
-        Game.restart();
-    };
+        this.restart = getElement<HTMLElement>(container, '#Restart');
+        this.targetInput = getElement<HTMLInputElement>(targetHealth, 'input');
+        this.targetValue = getElement<HTMLSpanElement>(targetHealth, 'span');
+        this.spawnInput = getElement<HTMLInputElement>(spawnInterval, 'input');
+        this.spawnValue = getElement<HTMLSpanElement>(spawnInterval, 'span');
+        this.durationInput = getElement<HTMLInputElement>(
+            targetDuration,
+            'input',
+        );
+        this.durationValue = getElement<HTMLSpanElement>(
+            targetDuration,
+            'span',
+        );
+        this.canReload = getElement<HTMLInputElement>(container, '#CanReload');
+        this.hits = getElement<HTMLElement>(container, '#HitsValue');
+        this.misses = getElement<HTMLElement>(container, '#MissesValue');
+        this.bulletsLeft = getElement<HTMLElement>(container, '#BulletsLeft');
+    }
 
-    // target health //
-    const targetHealth = getElement<HTMLElement>(container, '#TargetHealth');
-    const targetInput = getElement<HTMLInputElement>(targetHealth, 'input');
-    const targetValue = getElement<HTMLSpanElement>(targetHealth, 'span');
+    bind(controller: GameController): void {
+        this.restart.onclick = () => {
+            controller.restart();
+        };
 
-    const healthValue = Game.getTargetHealth().toString();
+        const healthValue = controller.getTargetHealth().toString();
+        this.targetInput.value = healthValue;
+        this.targetValue.textContent = healthValue + 'hp';
+        this.targetInput.onchange = () => {
+            controller.setTargetHealth(parseInt(this.targetInput.value, 10));
+            this.targetValue.textContent = this.targetInput.value + 'hp';
+        };
+        this.targetInput.oninput = () => {
+            this.targetValue.textContent = this.targetInput.value + 'hp';
+        };
 
-    targetInput.value = healthValue;
-    targetValue.textContent = healthValue + 'hp';
+        const intervalValue = (
+            controller.getTargetSpawnInterval() / 1000
+        ).toFixed(1);
+        this.spawnInput.value = intervalValue;
+        this.spawnValue.textContent = intervalValue + 's';
+        this.spawnInput.onchange = () => {
+            controller.setTargetSpawnInterval(
+                parseFloat(this.spawnInput.value) * 1000,
+            );
+            this.spawnValue.textContent =
+                parseFloat(this.spawnInput.value).toFixed(1) + 's';
+        };
+        this.spawnInput.oninput = () => {
+            this.spawnValue.textContent =
+                parseFloat(this.spawnInput.value).toFixed(1) + 's';
+        };
 
-    targetInput.onchange = function () {
-        Game.setTargetHealth(parseInt(targetInput.value, 10));
-        targetValue.textContent = targetInput.value + 'hp';
-    };
-    targetInput.oninput = function () {
-        targetValue.textContent = targetInput.value + 'hp';
-    };
+        const durationValue = (controller.getTargetDuration() / 1000).toFixed(
+            1,
+        );
+        this.durationInput.value = durationValue;
+        this.durationValue.textContent = durationValue + 's';
+        this.durationInput.onchange = () => {
+            controller.setTargetDuration(
+                parseFloat(this.durationInput.value) * 1000,
+            );
+            this.durationValue.textContent =
+                parseFloat(this.durationInput.value).toFixed(1) + 's';
+        };
+        this.durationInput.oninput = () => {
+            this.durationValue.textContent =
+                parseFloat(this.durationInput.value).toFixed(1) + 's';
+        };
 
-    // target spawn interval //
+        this.canReload.checked = true;
+        this.canReload.onchange = () => {
+            controller.setCanReload(this.canReload.checked);
+        };
+    }
 
-    const spawnInterval = getElement<HTMLElement>(
-        container,
-        '#TargetSpawnInterval',
-    );
-    const spawnInput = getElement<HTMLInputElement>(spawnInterval, 'input');
-    const spawnValue = getElement<HTMLSpanElement>(spawnInterval, 'span');
+    updateHits(count: number): void {
+        this.hits.textContent = count.toString();
+    }
 
-    const intervalValue = (Game.getTargetSpawnInterval() / 1000).toFixed(1);
+    updateMisses(count: number): void {
+        this.misses.textContent = count.toString();
+    }
 
-    spawnInput.value = intervalValue;
-    spawnValue.textContent = intervalValue + 's';
-
-    spawnInput.onchange = function () {
-        Game.setTargetSpawnInterval(parseFloat(spawnInput.value) * 1000);
-        spawnValue.textContent = parseFloat(spawnInput.value).toFixed(1) + 's';
-    };
-    spawnInput.oninput = function () {
-        spawnValue.textContent = parseFloat(spawnInput.value).toFixed(1) + 's';
-    };
-
-    // target duration //
-
-    const targetDuration = getElement<HTMLElement>(
-        container,
-        '#TargetDuration',
-    );
-    const durationInput = getElement<HTMLInputElement>(targetDuration, 'input');
-    const durationValue = getElement<HTMLSpanElement>(targetDuration, 'span');
-
-    const currentDurationValue = (Target.getDuration() / 1000).toFixed(1);
-
-    durationInput.value = currentDurationValue;
-    durationValue.textContent = currentDurationValue + 's';
-
-    durationInput.onchange = function () {
-        Target.setDuration(parseFloat(durationInput.value) * 1000);
-        durationValue.textContent =
-            parseFloat(durationInput.value).toFixed(1) + 's';
-
-        Game.restart();
-    };
-    durationInput.oninput = function () {
-        durationValue.textContent =
-            parseFloat(durationInput.value).toFixed(1) + 's';
-    };
-
-    // reloading //
-
-    const canReload = getElement<HTMLInputElement>(container, '#CanReload');
-
-    canReload.checked = true;
-    canReload.onchange = function () {
-        Game.setCanReload(canReload.checked);
-    };
-
-    // other //
-
-    HITS = getElement<HTMLElement>(container, '#HitsValue');
-    MISSES = getElement<HTMLElement>(container, '#MissesValue');
-    BULLETS_LEFT = getElement<HTMLElement>(container, '#BulletsLeft');
-}
-
-export function updateHits(count: number): void {
-    HITS.textContent = count.toString();
-}
-
-export function updateMisses(count: number): void {
-    MISSES.textContent = count.toString();
-}
-
-export function updateBulletsLeft(count: number): void {
-    BULLETS_LEFT.textContent = count.toString();
-}
-
-export function clear(): void {
-    HITS.textContent = '0';
-    MISSES.textContent = '0';
+    updateBulletsLeft(count: number): void {
+        this.bulletsLeft.textContent = count.toString();
+    }
 }

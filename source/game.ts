@@ -1,199 +1,258 @@
-import { addToGameLoop } from '@drk4/game-engine';
+import { type Container } from '@drk4/game-engine';
 import { boxBoxCollision, getRandomInt } from '@drk4/utilities';
 import { CrossHair } from './crosshair';
-import { G } from './globals';
-import * as GameMenu from './game_menu';
-import * as Message from './message';
+import type {
+    GameController,
+    GameHud,
+    MessageView,
+    RandomInt,
+} from './game_contracts';
 import { Target } from './target';
 import { Weapon } from './weapon';
 
-let CROSS_HAIR: CrossHair;
-const TARGETS: Target[] = [];
-
-export let MOUSE_HELD = false;
-
-export let MOUSE_X = 0;
-export let MOUSE_Y = 0;
-
-let HITS_COUNT = 0;
-let MISSES_COUNT = 0;
-
-// game options
-let TARGET_HEALTH = 1;
-let TARGET_SPAWN_INTERVAL = 1500; // in milliseconds
-
-let NEW_TARGET_COUNT = TARGET_SPAWN_INTERVAL; // so that it adds a target from the start
-
-let CURRENT_WEAPON: Weapon;
-
-export function init(): void {
-    CROSS_HAIR = new CrossHair();
-    CURRENT_WEAPON = new Weapon('machineGun');
-
-    const canvas = G.CANVAS.getHtmlCanvasElement();
-
-    canvas.addEventListener('mousemove', function (event) {
-        const bounds = canvas.getBoundingClientRect();
-        const x = event.clientX - bounds.left;
-        const y = event.clientY - bounds.top;
-
-        CROSS_HAIR.moveTo(x, y);
-
-        MOUSE_X = x;
-        MOUSE_Y = y;
-    });
-
-    document.body.addEventListener('mousedown', function () {
-        MOUSE_HELD = true;
-    });
-
-    document.body.addEventListener('mouseup', function () {
-        CURRENT_WEAPON.stopFiring();
-        MOUSE_HELD = false;
-    });
-
-    addToGameLoop(function (deltaTime) {
-        tick(deltaTime * 1000);
-    });
+export interface GameLayers {
+    targets: Container;
+    bullets: Container;
+    crosshair: Container;
 }
 
-export function start(): void {
-    GameMenu.updateHits(HITS_COUNT);
-    GameMenu.updateMisses(MISSES_COUNT);
+export interface GameArgs {
+    width: number;
+    height: number;
+    layers: GameLayers;
+    hud: GameHud;
+    message: MessageView;
+    randomInt?: RandomInt;
 }
 
-export function clear(): void {
-    for (const target of TARGETS) {
+export class Game implements GameController {
+    private readonly width: number;
+    private readonly height: number;
+    private readonly targetContainer: Container;
+    private readonly hud: GameHud;
+    private readonly message: MessageView;
+    private readonly randomInt: RandomInt;
+
+    private readonly targets: Target[] = [];
+    private readonly crosshair: CrossHair;
+    private readonly weapon: Weapon;
+
+    private pointerHeld = false;
+    private pointerX = 0;
+    private pointerY = 0;
+    private hitsCount = 0;
+    private missesCount = 0;
+    private targetHealth = 1;
+    private targetSpawnInterval = 1500;
+    private targetDuration = 3000;
+    private newTargetCount = this.targetSpawnInterval;
+
+    constructor({
+        width,
+        height,
+        layers,
+        hud,
+        message,
+        randomInt = getRandomInt,
+    }: GameArgs) {
+        this.width = width;
+        this.height = height;
+        this.targetContainer = layers.targets;
+        this.hud = hud;
+        this.message = message;
+        this.randomInt = randomInt;
+
+        this.crosshair = new CrossHair(layers.crosshair);
+        this.weapon = new Weapon({
+            type: 'machineGun',
+            bulletContainer: layers.bullets,
+            message: this.message,
+            randomInt,
+            onCollision: (x, y, bulletLength) => {
+                this.checkCollision(x, y, bulletLength);
+            },
+            onBulletsChanged: (count) => {
+                this.hud.updateBulletsLeft(count);
+            },
+        });
+    }
+
+    start(): void {
+        this.hud.updateHits(this.hitsCount);
+        this.hud.updateMisses(this.missesCount);
+    }
+
+    tick(deltaMs: number): void {
+        this.newTargetCount += deltaMs;
+
+        if (this.newTargetCount >= this.targetSpawnInterval) {
+            this.newTargetCount = 0;
+            this.newTarget();
+        }
+
+        this.weapon.tick(deltaMs, {
+            held: this.pointerHeld,
+            x: this.pointerX,
+            y: this.pointerY,
+        });
+
+        for (let index = this.targets.length - 1; index >= 0; index--) {
+            const target = this.targets[index];
+
+            if (target?.tick(deltaMs)) {
+                this.oneMoreMiss();
+                this.removeTarget(target);
+            }
+        }
+    }
+
+    movePointer(x: number, y: number): void {
+        this.crosshair.moveTo(x, y);
+        this.pointerX = x;
+        this.pointerY = y;
+    }
+
+    startFiring(): void {
+        this.pointerHeld = true;
+    }
+
+    stopFiring(): void {
+        this.weapon.stopFiring();
+        this.pointerHeld = false;
+    }
+
+    restart(): void {
+        this.clear();
+        this.start();
+    }
+
+    newTarget(): void {
+        const x = this.randomInt(0, this.width - Target.side_length);
+        const y = this.randomInt(0, this.height - Target.side_length);
+
+        this.targets.push(
+            new Target(
+                this.targetContainer,
+                x,
+                y,
+                this.targetHealth,
+                this.targetDuration,
+            ),
+        );
+    }
+
+    getTargetHealth(): number {
+        return this.targetHealth;
+    }
+
+    setTargetHealth(health: number): void {
+        this.targetHealth = health;
+        this.restart();
+    }
+
+    getTargetSpawnInterval(): number {
+        return this.targetSpawnInterval;
+    }
+
+    setTargetSpawnInterval(interval: number): void {
+        this.targetSpawnInterval = interval;
+        this.restart();
+    }
+
+    getTargetDuration(): number {
+        return this.targetDuration;
+    }
+
+    setTargetDuration(duration: number): void {
+        this.targetDuration = duration;
+        this.restart();
+    }
+
+    setCanReload(value: boolean): void {
+        this.weapon.setCanReload(value);
+        this.restart();
+    }
+
+    getHitCount(): number {
+        return this.hitsCount;
+    }
+
+    getMissCount(): number {
+        return this.missesCount;
+    }
+
+    getTargetCount(): number {
+        return this.targets.length;
+    }
+
+    private clear(): void {
+        for (const target of this.targets) {
+            target.clear();
+        }
+
+        this.targets.length = 0;
+        this.newTargetCount = this.targetSpawnInterval;
+        this.hitsCount = 0;
+        this.missesCount = 0;
+
+        this.weapon.reset();
+        this.message.hide();
+    }
+
+    private removeTarget(target: Target): void {
+        const position = this.targets.indexOf(target);
+
+        if (position === -1) {
+            return;
+        }
+
+        this.targets.splice(position, 1);
         target.clear();
     }
 
-    TARGETS.length = 0;
-
-    NEW_TARGET_COUNT = TARGET_SPAWN_INTERVAL;
-
-    HITS_COUNT = 0;
-    MISSES_COUNT = 0;
-
-    CURRENT_WEAPON.reset();
-    Message.hide();
-}
-
-export function restart(): void {
-    clear();
-    start();
-}
-
-function tick(deltaMs: number): void {
-    // targets
-    NEW_TARGET_COUNT += deltaMs;
-
-    if (NEW_TARGET_COUNT >= TARGET_SPAWN_INTERVAL) {
-        NEW_TARGET_COUNT = 0;
-
-        newTarget();
+    private oneMoreHit(): void {
+        this.hitsCount++;
+        this.hud.updateHits(this.hitsCount);
     }
 
-    // weapons
-    CURRENT_WEAPON.tick(deltaMs);
-
-    // check if there are targets that timed out (and thus need to be removed)
-    for (let index = TARGETS.length - 1; index >= 0; index--) {
-        const target = TARGETS[index];
-
-        if (target?.tick(deltaMs)) {
-            oneMoreMiss();
-
-            removeTarget(target);
-        }
+    private oneMoreMiss(): void {
+        this.missesCount++;
+        this.hud.updateMisses(this.missesCount);
     }
-}
 
-export function newTarget(): void {
-    const x = getRandomInt(0, G.CANVAS.width - Target.side_length);
-    const y = getRandomInt(0, G.CANVAS.height - Target.side_length);
+    private checkCollision(
+        bulletX: number,
+        bulletY: number,
+        bulletLength: number,
+    ): void {
+        const targetLength = Target.side_length;
 
-    TARGETS.push(new Target(x, y, TARGET_HEALTH));
-}
+        for (let index = this.targets.length - 1; index >= 0; index--) {
+            const target = this.targets[index];
 
-export function removeTarget(target: Target): void {
-    const position = TARGETS.indexOf(target);
-
-    TARGETS.splice(position, 1);
-
-    target.clear();
-}
-
-export function oneMoreHit(): void {
-    HITS_COUNT++;
-
-    GameMenu.updateHits(HITS_COUNT);
-}
-
-export function oneMoreMiss(): void {
-    MISSES_COUNT++;
-
-    GameMenu.updateMisses(MISSES_COUNT);
-}
-
-export function checkCollision(
-    bulletX: number,
-    bulletY: number,
-    bulletLength: number,
-): void {
-    const targetLength = Target.side_length;
-
-    for (let index = TARGETS.length - 1; index >= 0; index--) {
-        const target = TARGETS[index];
-
-        if (!target) {
-            continue;
-        }
-
-        if (
-            boxBoxCollision(
-                bulletX,
-                bulletY,
-                bulletLength,
-                bulletLength,
-                target.getX(),
-                target.getY(),
-                targetLength,
-                targetLength,
-            )
-        ) {
-            if (target.tookDamage(CURRENT_WEAPON.getDamageValue())) {
-                oneMoreHit();
-
-                removeTarget(target);
+            if (!target) {
+                continue;
             }
 
-            break;
+            if (
+                boxBoxCollision(
+                    bulletX,
+                    bulletY,
+                    bulletLength,
+                    bulletLength,
+                    target.getX(),
+                    target.getY(),
+                    targetLength,
+                    targetLength,
+                )
+            ) {
+                if (target.tookDamage(this.weapon.getDamageValue())) {
+                    this.oneMoreHit();
+                    this.removeTarget(target);
+                }
+
+                break;
+            }
         }
     }
-}
-
-export function setTargetHealth(health: number): void {
-    TARGET_HEALTH = health;
-
-    restart();
-}
-
-export function getTargetHealth(): number {
-    return TARGET_HEALTH;
-}
-
-export function setTargetSpawnInterval(interval: number): void {
-    TARGET_SPAWN_INTERVAL = interval;
-
-    restart();
-}
-
-export function getTargetSpawnInterval(): number {
-    return TARGET_SPAWN_INTERVAL;
-}
-
-export function setCanReload(value: boolean): void {
-    CURRENT_WEAPON.setCanReload(value);
-
-    restart();
 }

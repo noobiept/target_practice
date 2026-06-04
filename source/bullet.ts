@@ -1,4 +1,4 @@
-import { Container, Rectangle, addElement } from '@drk4/game-engine';
+import { Container, Rectangle } from '@drk4/game-engine';
 
 export class Bullet {
     readonly shape: Rectangle;
@@ -7,15 +7,11 @@ export class Bullet {
 
     static readonly side_length = 10; // the width/height (its the same value)
 
-    private static _container: Container;
-
-    static init(): void {
-        Bullet._container = new Container();
-
-        addElement(Bullet._container);
-    }
-
-    constructor(x: number, y: number) {
+    constructor(
+        private readonly container: Container,
+        x: number,
+        y: number,
+    ) {
         const shape = new Rectangle({
             x: x + Bullet.side_length / 2,
             y: y + Bullet.side_length / 2,
@@ -24,7 +20,7 @@ export class Bullet {
             color: 'blue',
         });
 
-        Bullet._container.addChild(shape);
+        this.container.addChild(shape);
 
         this.duration_count = 0;
         this.shape = shape;
@@ -37,7 +33,7 @@ export class Bullet {
     }
 
     clear(): void {
-        Bullet._container.removeChild(this.shape);
+        this.container.removeChild(this.shape);
     }
 
     getX(): number {

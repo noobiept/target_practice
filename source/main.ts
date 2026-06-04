@@ -1,11 +1,13 @@
-import { getCanvas, init as initEngine } from '@drk4/game-engine';
-import { Bullet } from './bullet';
-import { CrossHair } from './crosshair';
-import { G } from './globals';
-import * as Game from './game';
-import * as GameMenu from './game_menu';
-import * as Message from './message';
-import { Target } from './target';
+import {
+    Container,
+    addElement,
+    addToGameLoop,
+    getCanvas,
+    init as initEngine,
+} from '@drk4/game-engine';
+import { Game, type GameLayers } from './game';
+import { GameMenu } from './game_menu';
+import { GameMessage } from './message';
 
 window.addEventListener('load', function () {
     const container = document.querySelector<HTMLElement>('#GameCanvas');
@@ -20,17 +22,68 @@ window.addEventListener('load', function () {
         height: 400,
     });
 
-    G.CANVAS = getCanvas();
+    const canvas = getCanvas();
+    const canvasElement = canvas.getHtmlCanvasElement();
+    const gameMenu = new GameMenu(document);
+    const layers: GameLayers = {
+        targets: new Container(),
+        bullets: new Container(),
+        crosshair: new Container(),
+    };
+    const messageContainer = new Container();
 
-    GameMenu.init();
+    addElement(layers.targets);
+    addElement(layers.bullets);
+    addElement(layers.crosshair);
+    addElement(messageContainer);
 
-    // the order here sets the z-index of the elements
-    // for example, right now the bullets will always be on top of the targets
-    Target.init();
-    Bullet.init();
-    CrossHair.init();
-    Message.init();
+    const message = new GameMessage(
+        messageContainer,
+        canvas.width,
+        canvas.height,
+    );
+    const game = new Game({
+        width: canvas.width,
+        height: canvas.height,
+        layers,
+        hud: gameMenu,
+        message,
+    });
 
-    Game.init();
-    Game.start();
+    gameMenu.bind(game);
+
+    canvasElement.addEventListener('mousemove', function (event) {
+        const bounds = canvasElement.getBoundingClientRect();
+
+        game.movePointer(
+            event.clientX - bounds.left,
+            event.clientY - bounds.top,
+        );
+    });
+
+    document.body.addEventListener('mousedown', function (event) {
+        if (event.button !== 0) {
+            return;
+        }
+
+        game.startFiring();
+    });
+
+    window.addEventListener('mouseup', function (event) {
+        if (event.button !== 0) {
+            return;
+        }
+
+        game.stopFiring();
+    });
+
+    window.addEventListener('blur', function () {
+        game.stopFiring();
+    });
+
+    addToGameLoop(function (deltaTime) {
+        game.tick(deltaTime * 1000);
+    });
+
+    game.start();
 });
