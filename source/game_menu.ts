@@ -25,11 +25,11 @@ export function init() {
     targetInput.value = healthValue;
     targetValue.innerHTML = healthValue + 'hp';
 
-    targetInput.onchange = function (event) {
+    targetInput.onchange = function () {
         Game.setTargetHealth(parseInt(targetInput.value, 10));
         targetValue.innerHTML = targetInput.value + 'hp';
     };
-    targetInput.oninput = function (event) {
+    targetInput.oninput = function () {
         targetValue.innerHTML = targetInput.value + 'hp';
     };
 
@@ -46,11 +46,11 @@ export function init() {
     spawnInput.value = intervalValue;
     spawnValue.innerHTML = intervalValue + 's';
 
-    spawnInput.onchange = function (event) {
+    spawnInput.onchange = function () {
         Game.setTargetSpawnInterval(parseFloat(spawnInput.value) * 1000);
         spawnValue.innerHTML = parseFloat(spawnInput.value).toFixed(1) + 's';
     };
-    spawnInput.oninput = function (event) {
+    spawnInput.oninput = function () {
         spawnValue.innerHTML = parseFloat(spawnInput.value).toFixed(1) + 's';
     };
 
@@ -67,14 +67,14 @@ export function init() {
     durationInput.value = currentDurationValue;
     durationValue.innerHTML = currentDurationValue + 's';
 
-    durationInput.onchange = function (event) {
+    durationInput.onchange = function () {
         Target.setDuration(parseFloat(durationInput.value) * 1000);
         durationValue.innerHTML =
             parseFloat(durationInput.value).toFixed(1) + 's';
 
         Game.restart();
     };
-    durationInput.oninput = function (event) {
+    durationInput.oninput = function () {
         durationValue.innerHTML =
             parseFloat(durationInput.value).toFixed(1) + 's';
     };
@@ -84,7 +84,7 @@ export function init() {
     var canReload = <HTMLInputElement>container.querySelector('#CanReload');
 
     canReload.checked = true;
-    canReload.onchange = function (event) {
+    canReload.onchange = function () {
         Game.setCanReload(canReload.checked);
     };
 

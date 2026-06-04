@@ -1,6 +1,5 @@
 import { addToGameLoop } from '@drk4/game-engine';
 import { boxBoxCollision, getRandomInt } from '@drk4/utilities';
-import { Bullet } from './bullet';
 import { CrossHair } from './crosshair';
 import { G } from './globals';
 import * as GameMenu from './game_menu';
@@ -44,11 +43,11 @@ export function init() {
         MOUSE_Y = y;
     });
 
-    document.body.addEventListener('mousedown', function (event) {
+    document.body.addEventListener('mousedown', function () {
         MOUSE_HELD = true;
     });
 
-    document.body.addEventListener('mouseup', function (event) {
+    document.body.addEventListener('mouseup', function () {
         CURRENT_WEAPON.stopFiring();
         MOUSE_HELD = false;
     });
