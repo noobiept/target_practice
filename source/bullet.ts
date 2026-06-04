@@ -1,22 +1,22 @@
 import { Container, Rectangle, addElement } from '@drk4/game-engine';
 
 export class Bullet {
-    shape: Rectangle;
+    readonly shape: Rectangle;
     duration_count: number; // remove the bullet after a certain time/duration has passed
-    static duration = 700; // the duration of the bullets
+    static readonly duration = 700; // the duration of the bullets
 
-    static side_length = 10; // the width/height (its the same value)
+    static readonly side_length = 10; // the width/height (its the same value)
 
     private static _container: Container;
 
-    static init() {
+    static init(): void {
         Bullet._container = new Container();
 
         addElement(Bullet._container);
     }
 
     constructor(x: number, y: number) {
-        var shape = new Rectangle({
+        const shape = new Rectangle({
             x: x + Bullet.side_length / 2,
             y: y + Bullet.side_length / 2,
             width: Bullet.side_length,
@@ -30,25 +30,21 @@ export class Bullet {
         this.shape = shape;
     }
 
-    tick(deltaMs: number) {
+    tick(deltaMs: number): boolean {
         this.duration_count += deltaMs;
 
-        if (this.duration_count >= Bullet.duration) {
-            return true;
-        }
-
-        return false;
+        return this.duration_count >= Bullet.duration;
     }
 
-    clear() {
+    clear(): void {
         Bullet._container.removeChild(this.shape);
     }
 
-    getX() {
+    getX(): number {
         return this.shape.left;
     }
 
-    getY() {
+    getY(): number {
         return this.shape.top;
     }
 }

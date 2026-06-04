@@ -14,8 +14,5 @@ export default defineConfig(
             tseslint.configs.recommended,
             eslintConfigPrettier,
         ],
-        rules: {
-            'no-var': 'off',
-        },
     },
 );

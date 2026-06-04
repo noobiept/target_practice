@@ -8,10 +8,14 @@ import * as Message from './message';
 import { Target } from './target';
 
 window.addEventListener('load', function () {
-    var container = document.querySelector('#GameCanvas') as HTMLElement;
+    const container = document.querySelector<HTMLElement>('#GameCanvas');
+
+    if (!container) {
+        throw new Error('Missing required element: #GameCanvas');
+    }
 
     initEngine({
-        container: container,
+        container,
         width: 600,
         height: 400,
     });

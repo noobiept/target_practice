@@ -4,8 +4,23 @@ import * as Game from './game';
 import * as GameMenu from './game_menu';
 import * as Message from './message';
 
+interface RecoilInfo {
+    bullet: number;
+    xOffset: number;
+    yOffset: number;
+}
+
+interface WeaponInfo {
+    damage: number;
+    magazine_capacity: number;
+    reload_duration: number;
+    bullet_interval: number;
+    variance: number;
+    recoil: RecoilInfo[];
+}
+
 export class Weapon {
-    static info = {
+    static readonly info = {
         machineGun: {
             damage: 1,
             magazine_capacity: 30,
@@ -41,21 +56,10 @@ export class Weapon {
                 },
             ],
         },
-    };
+    } satisfies Record<string, WeaponInfo>;
 
-    info: {
-        damage: number;
-        magazine_capacity: number;
-        reload_duration: number;
-        bullet_interval: number;
-        variance: number;
-        recoil: {
-            bullet: number;
-            xOffset: number;
-            yOffset: number;
-        }[];
-    };
-    bullets: Bullet[];
+    readonly info: WeaponInfo;
+    readonly bullets: Bullet[];
     reload_count: number;
     bullet_interval_count: number;
     is_reloading: boolean;
@@ -63,7 +67,7 @@ export class Weapon {
     bullets_in_magazine: number;
     can_reload: boolean; // if we use bullets or not (just keep firing without ever need to reload)
 
-    constructor(type) {
+    constructor(type: keyof typeof Weapon.info) {
         this.info = Weapon.info[type];
         this.bullets = [];
         this.reload_count = 0;
@@ -76,30 +80,27 @@ export class Weapon {
         GameMenu.updateBulletsLeft(this.bullets_in_magazine);
     }
 
-    fireBullet() {
+    fireBullet(): void {
         if (this.is_reloading) {
             return;
         }
 
-        var weaponInfo = this.info;
-        var variance = weaponInfo.variance;
-        var recoil = weaponInfo.recoil;
+        const weaponInfo = this.info;
+        const variance = weaponInfo.variance;
+        const recoil = weaponInfo.recoil;
 
-        var bulletLength = Bullet.side_length;
-        var halfBulletLength = bulletLength / 2;
-        var centerX = Math.round(Game.MOUSE_X - halfBulletLength);
-        var centerY = Math.round(Game.MOUSE_Y - halfBulletLength);
+        const bulletLength = Bullet.side_length;
+        const halfBulletLength = bulletLength / 2;
+        const centerX = Math.round(Game.MOUSE_X - halfBulletLength);
+        const centerY = Math.round(Game.MOUSE_Y - halfBulletLength);
 
-        var x = getRandomInt(centerX - variance, centerX + variance);
-        var y = getRandomInt(centerY - variance, centerY + variance);
+        let x = getRandomInt(centerX - variance, centerX + variance);
+        let y = getRandomInt(centerY - variance, centerY + variance);
 
         // find the recoil info to be used for the current bullet (depends on the number of bullets fired in the current spray)
-        var recoilInfo = null;
-        var nextInfo;
+        let recoilInfo: RecoilInfo | null = null;
 
-        for (var a = 0; a < recoil.length; a++) {
-            nextInfo = recoil[a];
-
+        for (const nextInfo of recoil) {
             if (this.bullets_fired < nextInfo.bullet) {
                 break;
             }
@@ -112,7 +113,7 @@ export class Weapon {
             y += recoilInfo.yOffset;
         }
 
-        var bullet = new Bullet(x, y);
+        const bullet = new Bullet(x, y);
         this.bullets.push(bullet);
 
         // check if we hit any target
@@ -129,15 +130,15 @@ export class Weapon {
         }
     }
 
-    removeBullet(bullet) {
-        var position = this.bullets.indexOf(bullet);
+    removeBullet(bullet: Bullet): void {
+        const position = this.bullets.indexOf(bullet);
 
         this.bullets.splice(position, 1);
 
         bullet.clear();
     }
 
-    reload() {
+    reload(): void {
         this.is_reloading = true;
 
         Message.show('Reloading..');
@@ -147,21 +148,19 @@ export class Weapon {
     Clears the shape elements associated (call this when you aren't using the object anymore, just to clear)
  */
 
-    clear() {
-        var bullets = this.bullets;
-
-        for (var a = 0; a < bullets.length; a++) {
-            bullets[a].clear();
+    clear(): void {
+        for (const bullet of this.bullets) {
+            bullet.clear();
         }
 
-        bullets.length = 0;
+        this.bullets.length = 0;
     }
 
     /*
     Resets the weapon, call this when you want to reuse the object.
  */
 
-    reset() {
+    reset(): void {
         this.clear();
 
         this.reload_count = 0;
@@ -173,19 +172,19 @@ export class Weapon {
         GameMenu.updateBulletsLeft(this.bullets_in_magazine);
     }
 
-    stopFiring() {
+    stopFiring(): void {
         this.bullets_fired = 0;
     }
 
-    getDamageValue() {
+    getDamageValue(): number {
         return this.info.damage;
     }
 
-    setCanReload(value) {
+    setCanReload(value: boolean): void {
         this.can_reload = value;
     }
 
-    tick(deltaMs: number) {
+    tick(deltaMs: number): void {
         this.bullet_interval_count += deltaMs;
 
         if (Game.MOUSE_HELD && !this.is_reloading) {
@@ -198,11 +197,13 @@ export class Weapon {
         }
 
         // check if there are bullets that timed out (and thus need to be removed)
-        var bullets = this.bullets;
+        const bullets = this.bullets;
 
-        for (var a = bullets.length - 1; a >= 0; a--) {
-            if (bullets[a].tick(deltaMs)) {
-                this.removeBullet(bullets[a]);
+        for (let index = bullets.length - 1; index >= 0; index--) {
+            const bullet = bullets[index];
+
+            if (bullet?.tick(deltaMs)) {
+                this.removeBullet(bullet);
             }
         }
 

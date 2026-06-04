@@ -1,33 +1,33 @@
 import { Container, Rectangle, addElement } from '@drk4/game-engine';
 
 export class Target {
-    shape: Rectangle;
+    readonly shape: Rectangle;
     duration_count: number; // remove the target after a certain time has passed (and count as a miss)
     health: number;
 
-    static _duration = 3000;
-    static side_length = 10; // the width/height
+    private static _duration = 3000;
+    static readonly side_length = 10; // the width/height
 
     private static _container: Container; // all targets will be added to this container
 
-    static init() {
+    static init(): void {
         Target._container = new Container();
 
         addElement(Target._container);
     }
 
-    static setDuration(duration) {
+    static setDuration(duration: number): void {
         Target._duration = duration;
     }
 
-    static getDuration() {
+    static getDuration(): number {
         return Target._duration;
     }
 
     constructor(x: number, y: number, health = 1) {
-        var length = Target.side_length;
+        const length = Target.side_length;
 
-        var shape = new Rectangle({
+        const shape = new Rectangle({
             x: x + length / 2,
             y: y + length / 2,
             width: length,
@@ -42,31 +42,27 @@ export class Target {
         this.health = health;
     }
 
-    tookDamage(damage) {
+    tookDamage(damage: number): boolean {
         this.health -= damage;
 
         return this.health <= 0;
     }
 
-    tick(deltaMs: number) {
+    tick(deltaMs: number): boolean {
         this.duration_count += deltaMs;
 
-        if (this.duration_count >= Target._duration) {
-            return true;
-        }
-
-        return false;
+        return this.duration_count >= Target._duration;
     }
 
-    clear() {
+    clear(): void {
         Target._container.removeChild(this.shape);
     }
 
-    getX() {
+    getX(): number {
         return this.shape.left;
     }
 
-    getY() {
+    getY(): number {
         return this.shape.top;
     }
 }

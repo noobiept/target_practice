@@ -1,7 +1,7 @@
 import type { Canvas } from '@drk4/game-engine';
 
-export const G: {
-    CANVAS: Canvas;
-} = {
-    CANVAS: null,
-};
+class Globals {
+    CANVAS!: Canvas;
+}
+
+export const G = new Globals();

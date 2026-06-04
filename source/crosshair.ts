@@ -1,20 +1,20 @@
 import { Circle, Container, addElement } from '@drk4/game-engine';
 
 export class CrossHair {
-    shape: Circle;
+    readonly shape: Circle;
 
     private static _container: Container;
 
-    static init() {
+    static init(): void {
         CrossHair._container = new Container();
 
         addElement(CrossHair._container);
     }
 
     constructor() {
-        var radius = 3;
+        const radius = 3;
 
-        var shape = new Circle({
+        const shape = new Circle({
             x: 0,
             y: 0,
             radius: radius,
@@ -26,12 +26,12 @@ export class CrossHair {
         this.shape = shape;
     }
 
-    moveTo(x, y) {
+    moveTo(x: number, y: number): void {
         this.shape.x = x;
         this.shape.y = y;
     }
 
-    clear() {
+    clear(): void {
         CrossHair._container.removeChild(this.shape);
     }
 }

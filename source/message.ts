@@ -2,14 +2,13 @@ import { Container, Rectangle, Text, addElement } from '@drk4/game-engine';
 import { Timeout } from '@drk4/utilities';
 import { G } from './globals';
 
-var CONTAINER: Container;
-var TEXT: Text;
-var BACKGROUND: Rectangle;
-var TIMEOUT: Timeout;
+let CONTAINER: Container;
+let TEXT: Text;
+let TIMEOUT: Timeout;
 
-export function init() {
-    var canvasWidth = G.CANVAS.width;
-    var canvasHeight = G.CANVAS.height;
+export function init(): void {
+    const canvasWidth = G.CANVAS.width;
+    const canvasHeight = G.CANVAS.height;
 
     // container
     CONTAINER = new Container();
@@ -29,7 +28,7 @@ export function init() {
     });
 
     // background element
-    BACKGROUND = new Rectangle({
+    const background = new Rectangle({
         x: canvasWidth / 2,
         y: canvasHeight / 2 + 15,
         width: canvasWidth,
@@ -37,7 +36,7 @@ export function init() {
         color: 'rgb(161,170,227)',
     });
 
-    CONTAINER.addChild(BACKGROUND);
+    CONTAINER.addChild(background);
     CONTAINER.addChild(TEXT);
 
     CONTAINER.visible = false;
@@ -46,22 +45,24 @@ export function init() {
     TIMEOUT = new Timeout();
 }
 
-export function show(text, timeout?, callback?) {
+export function show(
+    text: string,
+    timeout?: number,
+    callback?: () => void,
+): void {
     TEXT.text = text;
     CONTAINER.visible = true;
 
-    if (typeof timeout !== 'undefined') {
+    if (timeout !== undefined) {
         TIMEOUT.start(function () {
-            if (typeof callback !== 'undefined') {
-                callback();
-            }
+            callback?.();
 
             CONTAINER.visible = false;
         }, timeout);
     }
 }
 
-export function hide() {
+export function hide(): void {
     TIMEOUT.clear();
     CONTAINER.visible = false;
 }
