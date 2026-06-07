@@ -13,6 +13,7 @@
         "lint": "eslint . --max-warnings 0",
         "lint:fix": "eslint . --fix",
         "preview": "vite preview",
+        "release": "pnpm run check && vite build --mode release",
         "test": "vitest run",
         "test:watch": "vitest"
     },

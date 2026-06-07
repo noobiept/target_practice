@@ -10,6 +10,8 @@ import { GameMenu } from './game_menu';
 import { GameMessage } from './message';
 
 window.addEventListener('load', function () {
+    console.info(`target practice v${__APP_VERSION__}`);
+
     const container = document.querySelector<HTMLElement>('#GameCanvas');
 
     if (!container) {
