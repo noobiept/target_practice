@@ -28,6 +28,20 @@ describe('Target', () => {
         expect(target.tookDamage(1)).toBe(true);
     });
 
+    it('fades as it takes damage', () => {
+        const target = new Target(new Container(), 10, 15, 3, 1000);
+
+        expect(target.shape.opacity).toBe(1);
+
+        target.tookDamage(1);
+
+        expect(target.shape.opacity).toBeCloseTo(0.7667, 3);
+
+        target.tookDamage(1);
+
+        expect(target.shape.opacity).toBeCloseTo(0.5333, 3);
+    });
+
     it('expires after its configured duration and can be cleared', () => {
         const container = new Container();
         const target = new Target(container, 10, 15, 1, 1000);

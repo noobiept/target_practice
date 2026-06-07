@@ -5,6 +5,12 @@
 A shooter game to practice reaction time/aim.
 Need to shoot targets that appear randomly in the canvas.
 
+## Targets
+
+Targets spawn at random positions at a fixed interval, and disappear after a set duration if not destroyed (counting as a miss).
+
+Targets can be configured to require multiple hits — they fade a bit with each hit (down to a minimum opacity, so they stay visible), giving feedback that the damage is registering.
+
 ## Weapon mechanics
 
 The weapon fires while the pointer is held, at a fixed interval per bullet.

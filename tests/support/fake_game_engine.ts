@@ -9,6 +9,7 @@ class Element {
     width = 0;
     height = 0;
     visible = true;
+    opacity = 1;
 
     constructor({ x = 0, y = 0 }: ElementArgs = {}) {
         this.x = x;

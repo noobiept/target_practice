@@ -6,6 +6,9 @@ export class Target {
     health: number;
 
     static readonly side_length = 10; // the width/height
+    static readonly min_opacity = 0.3; // opacity when at the lowest health (so the target stays visible)
+
+    private readonly maxHealth: number;
 
     constructor(
         private readonly container: Container,
@@ -29,12 +32,21 @@ export class Target {
         this.duration_count = 0;
         this.shape = shape;
         this.health = health;
+        this.maxHealth = health;
     }
 
     tookDamage(damage: number): boolean {
         this.health -= damage;
 
-        return this.health <= 0;
+        if (this.health <= 0) {
+            return true;
+        }
+
+        const healthRatio = this.health / this.maxHealth;
+        this.shape.opacity =
+            Target.min_opacity + healthRatio * (1 - Target.min_opacity);
+
+        return false;
     }
 
     tick(deltaMs: number): boolean {
