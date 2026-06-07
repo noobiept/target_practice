@@ -1,4 +1,5 @@
 import type { GameController, GameHud } from './game_contracts';
+import { loadOptions, saveOption } from './options';
 
 function getElement<T extends Element>(
     parent: ParentNode,
@@ -63,6 +64,28 @@ export class GameMenu implements GameHud {
     }
 
     bind(controller: GameController): void {
+        const options = loadOptions();
+
+        if (options.targetHealth !== undefined) {
+            controller.setTargetHealth(options.targetHealth);
+        }
+
+        if (options.targetSpawnInterval !== undefined) {
+            controller.setTargetSpawnInterval(options.targetSpawnInterval);
+        }
+
+        if (options.targetDuration !== undefined) {
+            controller.setTargetDuration(options.targetDuration);
+        }
+
+        if (options.canReload !== undefined) {
+            controller.setCanReload(options.canReload);
+        }
+
+        if (options.hasRecoil !== undefined) {
+            controller.setHasRecoil(options.hasRecoil);
+        }
+
         this.restart.onclick = () => {
             controller.restart();
         };
@@ -71,7 +94,10 @@ export class GameMenu implements GameHud {
         this.targetInput.value = healthValue;
         this.targetValue.textContent = healthValue + 'hp';
         this.targetInput.onchange = () => {
-            controller.setTargetHealth(parseInt(this.targetInput.value, 10));
+            const health = parseInt(this.targetInput.value, 10);
+
+            controller.setTargetHealth(health);
+            saveOption('targetHealth', health);
             this.targetValue.textContent = this.targetInput.value + 'hp';
         };
         this.targetInput.oninput = () => {
@@ -84,9 +110,10 @@ export class GameMenu implements GameHud {
         this.spawnInput.value = intervalValue;
         this.spawnValue.textContent = intervalValue + 's';
         this.spawnInput.onchange = () => {
-            controller.setTargetSpawnInterval(
-                parseFloat(this.spawnInput.value) * 1000,
-            );
+            const interval = parseFloat(this.spawnInput.value) * 1000;
+
+            controller.setTargetSpawnInterval(interval);
+            saveOption('targetSpawnInterval', interval);
             this.spawnValue.textContent =
                 parseFloat(this.spawnInput.value).toFixed(1) + 's';
         };
@@ -101,9 +128,10 @@ export class GameMenu implements GameHud {
         this.durationInput.value = durationValue;
         this.durationValue.textContent = durationValue + 's';
         this.durationInput.onchange = () => {
-            controller.setTargetDuration(
-                parseFloat(this.durationInput.value) * 1000,
-            );
+            const duration = parseFloat(this.durationInput.value) * 1000;
+
+            controller.setTargetDuration(duration);
+            saveOption('targetDuration', duration);
             this.durationValue.textContent =
                 parseFloat(this.durationInput.value).toFixed(1) + 's';
         };
@@ -112,14 +140,16 @@ export class GameMenu implements GameHud {
                 parseFloat(this.durationInput.value).toFixed(1) + 's';
         };
 
-        this.canReload.checked = true;
+        this.canReload.checked = options.canReload ?? true;
         this.canReload.onchange = () => {
             controller.setCanReload(this.canReload.checked);
+            saveOption('canReload', this.canReload.checked);
         };
 
-        this.hasRecoil.checked = true;
+        this.hasRecoil.checked = options.hasRecoil ?? true;
         this.hasRecoil.onchange = () => {
             controller.setHasRecoil(this.hasRecoil.checked);
+            saveOption('hasRecoil', this.hasRecoil.checked);
         };
     }
 

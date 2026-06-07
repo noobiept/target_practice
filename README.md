@@ -5,6 +5,10 @@
 A shooter game to practice reaction time/aim.
 Need to shoot targets that appear randomly in the canvas.
 
+## Options
+
+The game options (target health/spawn interval/duration, reloading, recoil) can be changed in the game menu, and are saved in the browser's local storage — they carry over to the next session.
+
 ## Targets
 
 Targets spawn at random positions at a fixed interval, and disappear after a set duration if not destroyed (counting as a miss).
