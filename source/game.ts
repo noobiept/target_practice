@@ -117,7 +117,6 @@ export class Game implements GameController {
     }
 
     stopFiring(): void {
-        this.weapon.stopFiring();
         this.pointerHeld = false;
     }
 

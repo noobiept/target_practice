@@ -14,6 +14,7 @@ interface WeaponInfo {
     readonly magazineCapacity: number;
     readonly reloadDuration: number;
     readonly bulletInterval: number;
+    readonly recoilRecoveryInterval: number;
     readonly variance: number;
     readonly recoil: readonly RecoilInfo[];
 }
@@ -30,6 +31,7 @@ const WEAPON_INFO = {
         magazineCapacity: 30,
         reloadDuration: 2000,
         bulletInterval: 200,
+        recoilRecoveryInterval: 400,
         variance: 3,
         recoil: [
             {
@@ -83,6 +85,7 @@ export class Weapon {
 
     private reloadCount = 0;
     private bulletIntervalCount: number;
+    private recoilRecoveryCount = 0;
     private isReloading = false;
     private bulletsFired = 0;
     private bulletsInMagazine: number;
@@ -112,11 +115,23 @@ export class Weapon {
         this.bulletIntervalCount += deltaMs;
 
         if (input.held && !this.isReloading) {
+            this.recoilRecoveryCount = 0;
+
             if (this.bulletIntervalCount >= this.info.bulletInterval) {
                 this.bulletIntervalCount = 0;
                 this.bulletsFired++;
 
                 this.fireBullet(input.x, input.y);
+            }
+        } else if (this.bulletsFired > 0) {
+            this.recoilRecoveryCount += deltaMs;
+
+            while (
+                this.bulletsFired > 0 &&
+                this.recoilRecoveryCount >= this.info.recoilRecoveryInterval
+            ) {
+                this.recoilRecoveryCount -= this.info.recoilRecoveryInterval;
+                this.bulletsFired--;
             }
         }
 
@@ -134,6 +149,7 @@ export class Weapon {
             if (this.reloadCount >= this.info.reloadDuration) {
                 this.reloadCount = 0;
                 this.isReloading = false;
+                this.bulletsFired = 0;
                 this.bulletsInMagazine = this.info.magazineCapacity;
 
                 this.message.hide();
@@ -147,15 +163,12 @@ export class Weapon {
 
         this.reloadCount = 0;
         this.bulletIntervalCount = this.info.bulletInterval;
+        this.recoilRecoveryCount = 0;
         this.isReloading = false;
         this.bulletsFired = 0;
         this.bulletsInMagazine = this.info.magazineCapacity;
 
         this.onBulletsChanged(this.bulletsInMagazine);
-    }
-
-    stopFiring(): void {
-        this.bulletsFired = 0;
     }
 
     getDamageValue(): number {

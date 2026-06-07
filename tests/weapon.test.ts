@@ -51,21 +51,43 @@ describe('Weapon', () => {
         expect(onBulletsChanged).toHaveBeenLastCalledWith(28);
     });
 
-    it('resets recoil when firing stops', () => {
+    it('recovers recoil gradually after firing stops', () => {
         const { weapon, onCollision } = createWeapon();
-        const pointer = { held: true, x: 100, y: 100 };
+        const held = { held: true, x: 100, y: 100 };
+        const released = { held: false, x: 100, y: 100 };
 
-        weapon.tick(0, pointer);
-        weapon.tick(200, pointer);
-        weapon.tick(200, pointer);
-        weapon.stopFiring();
-        weapon.tick(200, pointer);
+        weapon.tick(0, held);
+        weapon.tick(200, held);
+        weapon.tick(200, held);
+        weapon.tick(399, released);
+        weapon.tick(0, held);
+        weapon.tick(1600, released);
+        weapon.tick(0, held);
 
         expect(onCollision.mock.calls).toEqual([
             [95, 95, 10],
             [95, 95, 10],
             [95, 80, 10],
+            [95, 80, 10],
             [95, 95, 10],
+        ]);
+    });
+
+    it('builds up recoil even when tap firing', () => {
+        const { weapon, onCollision } = createWeapon();
+        const held = { held: true, x: 100, y: 100 };
+        const released = { held: false, x: 100, y: 100 };
+
+        weapon.tick(0, held);
+        weapon.tick(100, released);
+        weapon.tick(100, held);
+        weapon.tick(100, released);
+        weapon.tick(100, held);
+
+        expect(onCollision.mock.calls).toEqual([
+            [95, 95, 10],
+            [95, 95, 10],
+            [95, 80, 10],
         ]);
     });
 
@@ -96,5 +118,10 @@ describe('Weapon', () => {
 
         expect(hideMessage).toHaveBeenCalledOnce();
         expect(onBulletsChanged).toHaveBeenLastCalledWith(30);
+
+        weapon.tick(200, pointer);
+
+        expect(onCollision).toHaveBeenCalledTimes(31);
+        expect(onCollision).toHaveBeenLastCalledWith(95, 95, 10);
     });
 });
