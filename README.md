@@ -24,6 +24,8 @@ When you stop firing, recoil doesn't reset immediately — it recovers gradually
 
 Reloading resets the recoil pattern — a fresh magazine starts with no recoil.
 
+Recoil can be turned off entirely in the game menu (useful when practicing with high-health targets).
+
 ### Reloading
 
 The weapon reloads automatically when the magazine runs out, and can't fire during the reload.

@@ -22,6 +22,7 @@ export class GameMenu implements GameHud {
     private readonly durationInput: HTMLInputElement;
     private readonly durationValue: HTMLSpanElement;
     private readonly canReload: HTMLInputElement;
+    private readonly hasRecoil: HTMLInputElement;
     private readonly hits: HTMLElement;
     private readonly misses: HTMLElement;
     private readonly bulletsLeft: HTMLElement;
@@ -55,6 +56,7 @@ export class GameMenu implements GameHud {
             'span',
         );
         this.canReload = getElement<HTMLInputElement>(container, '#CanReload');
+        this.hasRecoil = getElement<HTMLInputElement>(container, '#HasRecoil');
         this.hits = getElement<HTMLElement>(container, '#HitsValue');
         this.misses = getElement<HTMLElement>(container, '#MissesValue');
         this.bulletsLeft = getElement<HTMLElement>(container, '#BulletsLeft');
@@ -113,6 +115,11 @@ export class GameMenu implements GameHud {
         this.canReload.checked = true;
         this.canReload.onchange = () => {
             controller.setCanReload(this.canReload.checked);
+        };
+
+        this.hasRecoil.checked = true;
+        this.hasRecoil.onchange = () => {
+            controller.setHasRecoil(this.hasRecoil.checked);
         };
     }
 

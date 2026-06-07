@@ -7,6 +7,7 @@ export interface GameController {
     getTargetDuration(): number;
     setTargetDuration(duration: number): void;
     setCanReload(value: boolean): void;
+    setHasRecoil(value: boolean): void;
 }
 
 export interface GameHud {

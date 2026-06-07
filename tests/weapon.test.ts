@@ -73,6 +73,22 @@ describe('Weapon', () => {
         ]);
     });
 
+    it('applies no recoil when disabled', () => {
+        const { weapon, onCollision } = createWeapon();
+        const pointer = { held: true, x: 100, y: 100 };
+
+        weapon.setHasRecoil(false);
+        weapon.tick(0, pointer);
+        weapon.tick(200, pointer);
+        weapon.tick(200, pointer);
+
+        expect(onCollision.mock.calls).toEqual([
+            [95, 95, 10],
+            [95, 95, 10],
+            [95, 95, 10],
+        ]);
+    });
+
     it('builds up recoil even when tap firing', () => {
         const { weapon, onCollision } = createWeapon();
         const held = { held: true, x: 100, y: 100 };

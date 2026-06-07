@@ -90,6 +90,7 @@ export class Weapon {
     private bulletsFired = 0;
     private bulletsInMagazine: number;
     private canReload = true;
+    private hasRecoil = true;
 
     constructor({
         type,
@@ -179,6 +180,10 @@ export class Weapon {
         this.canReload = value;
     }
 
+    setHasRecoil(value: boolean): void {
+        this.hasRecoil = value;
+    }
+
     private fireBullet(pointerX: number, pointerY: number): void {
         const bulletLength = Bullet.side_length;
         const halfBulletLength = bulletLength / 2;
@@ -194,19 +199,21 @@ export class Weapon {
             centerY + this.info.variance,
         );
 
-        let recoilInfo: RecoilInfo | null = null;
+        if (this.hasRecoil) {
+            let recoilInfo: RecoilInfo | null = null;
 
-        for (const nextInfo of this.info.recoil) {
-            if (this.bulletsFired < nextInfo.bullet) {
-                break;
+            for (const nextInfo of this.info.recoil) {
+                if (this.bulletsFired < nextInfo.bullet) {
+                    break;
+                }
+
+                recoilInfo = nextInfo;
             }
 
-            recoilInfo = nextInfo;
-        }
-
-        if (recoilInfo !== null) {
-            x += recoilInfo.xOffset;
-            y += recoilInfo.yOffset;
+            if (recoilInfo !== null) {
+                x += recoilInfo.xOffset;
+                y += recoilInfo.yOffset;
+            }
         }
 
         const bullet = new Bullet(this.bulletContainer, x, y);

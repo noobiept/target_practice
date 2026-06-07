@@ -172,6 +172,11 @@ export class Game implements GameController {
         this.restart();
     }
 
+    setHasRecoil(value: boolean): void {
+        this.weapon.setHasRecoil(value);
+        this.restart();
+    }
+
     getHitCount(): number {
         return this.hitsCount;
     }
