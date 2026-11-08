@@ -1,5 +1,7 @@
 # [Try it out here](https://pedruu.ch/games/target_practice/)
 
+[![CI](https://github.com/noobiept/target_practice/actions/workflows/build.yml/badge.svg)](https://github.com/noobiept/target_practice/actions/workflows/build.yml)
+
 ## Description
 
 A shooter game to practice reaction time/aim.
